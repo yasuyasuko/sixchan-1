@@ -1,8 +1,10 @@
+import base64
+import hashlib
 import json
 from datetime import datetime, timezone
 
 import pytz
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
@@ -78,8 +80,26 @@ class ResFrom(FlaskForm):
     body = TextAreaField("コメント内容", validators=[DataRequired(), Length(max=1000)])
 
 
-@app.route("/")
+def get_b64encoded_digest_string_from_words(*words: list[str]) -> str:
+    digest = hashlib.md5("".join(words).encode()).digest()
+    return base64.b64encode(digest).decode().strip("=")
+
+
+@app.route("/", methods=["GET", "POST"])
 def index():
     form = ResFrom()
+    if form.validate_on_submit():
+        ip = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
+        today_utc = datetime.utcnow().strftime("%Y%m%d")
+        res = Res(
+            author=form.author.data or None,
+            email=form.email.data or None,
+            who=get_b64encoded_digest_string_from_words(ip, today_utc),
+            body=form.body.data,
+        )
+        db.session.add(res)
+        db.session.commit()
+        return redirect("/")
+
     reses = Res.query.all()
     return render_template("index.html", reses=reses, num_reses=len(reses), form=form)
