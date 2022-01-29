@@ -1,15 +1,13 @@
-import base64
-import hashlib
 from datetime import datetime
 
 from flask import Flask, redirect, render_template, request
 from flask_wtf.csrf import CSRFProtect
 
-
 from sixchan.config import Config
 from sixchan.filters import authorformat, datetimeformat, whoformat
-from sixchan.models import Res, db
 from sixchan.forms import ResForm
+from sixchan.models import Res, db
+from sixchan.utils import get_b64encoded_digest_string_from_words
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -19,11 +17,6 @@ db.init_app(app)
 app.jinja_env.filters["datetimeformat"] = datetimeformat
 app.jinja_env.filters["authorformat"] = authorformat
 app.jinja_env.filters["whoformat"] = whoformat
-
-
-def get_b64encoded_digest_string_from_words(*words: list[str]) -> str:
-    digest = hashlib.md5("".join(words).encode()).digest()
-    return base64.b64encode(digest).decode().strip("=")
 
 
 @app.route("/", methods=["GET", "POST"])
