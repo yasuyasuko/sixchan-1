@@ -1,52 +1,25 @@
 import base64
 import hashlib
-from datetime import datetime, timezone
+from datetime import datetime
 
-import pytz
 from flask import Flask, redirect, render_template, request
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
-from markupsafe import Markup, escape
 from wtforms import StringField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, Optional
 
 from sixchan.config import Config
-from sixchan.models import db, Res
+from sixchan.filters import authorformat, datetimeformat, whoformat
+from sixchan.models import Res, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
 csrf = CSRFProtect(app)
 db.init_app(app)
 
-
-@app.template_filter("authorformat")
-def authorformat(author, email):
-    if not author:
-        author = "null"
-    else:
-        author = escape(author)
-
-    if email:
-        html = f'<a href="mailto:{email}" class="text-blue-500">{author}</a>'
-    else:
-        html = f'<span class="text-green-500">{author}</span>'
-
-    return Markup(html)
-
-
-@app.template_filter("datetimeformat")
-def datetimeformat(dt: datetime):
-    if not dt.tzinfo:
-        dt = dt.replace(tzinfo=timezone.utc)
-    dt_jp = dt.astimezone(pytz.timezone("Asia/Tokyo"))
-    msec = int(dt_jp.microsecond / 1000)
-    html = f'{dt_jp.strftime("%Y/%m/%d(%a) %H:%M:%S")}<span class="text-xs text-gray-300">.{msec:03}</span>'
-    return Markup(html)
-
-
-@app.template_filter("whoformat")
-def whoformat(who):
-    return Markup(f"<span title={who}>{who[:10]}</span>")
+app.jinja_env.filters["datetimeformat"] = datetimeformat
+app.jinja_env.filters["authorformat"] = authorformat
+app.jinja_env.filters["whoformat"] = whoformat
 
 
 class ResFrom(FlaskForm):
