@@ -1,33 +1,32 @@
 {% extends "base.html" %}
-{% block title %}{{ thread.name }}{% endblock %}
+{% block title %}{{ board.name }}{% endblock %}
 {% block content %}
-<!-- Main.ThreadTittle -->
 <div>
-    <div class="flex">
-        <div class="p-2 bg-blue-500 rounded-lg">
-            <span class="font-medium text-white"> {{ thread.reses_count }} </span>
-            <span class="font-bold text-gray-100">Responses</span>
+    <h2 class="font-bold mt-1 text-xl">{{ board.name }}</h2>
+    <p>{{board.description}}</p>
+</div>
+<div class="bg-white rounded-lg mt-4">
+    <div class="bg-blue-500 p-2 text-white text-lg font-bold rounded-t-lg">スレッド一覧</div>
+    <div class="p-2">
+        {% for thread in board.threads %}
+        <div>
+            <a class="font-semibold text-blue-500" href="/threads/{{ thread.id | uuidshort }}">
+                {{ thread.name }}({{ thread.reses_count }})
+            </a>
+            <span class="text-sm">...最後の投稿: {{ thread.last_posted_at | datetimeformat }}</span>
         </div>
+        {% endfor %}
     </div>
-    <h1 class="text-xl font-bold">{{ thread.name }}</h1>
 </div>
-<!-- Main.Reses -->
+<div class="border my-2"></div>
 <div>
-    {% for res in thread.reses %}
-    <div class="p-2 mt-2 bg-white rounded-lg">
-        <p class="font-medium">
-            {{ res.number }} 名前:{{ res.anon_name | authorformat(res.anon_email) }}
-            {{ res.created_at | datetimeformat }} ID:{{ res.who | whoformat }}
-        </p>
-        <p>{{res.body}}</p>
-    </div>
-    {% endfor %}
-</div>
-<!-- Main.Form -->
-<div>
-    <p class="text-lg font-bold">レスを投稿する</p>
-    <form action="" , method="POST" id="res-form">
+    <form action="" , method="POST" id="thread-form">
         {{ form.csrf_token }}
+        <div class="flex flex-col mt-1">
+            {{ form.thread_name.label(class="font-semibold") }}
+            {{ form.thread_name(class="p-1 mt-2 bg-white border-gray-200 rounded focus:outline-none
+            focus:border-blue-700") }}
+        </div>
         <div class="flex flex-col mt-1">
             {{ form.anon_name.label(class="font-semibold") }}
             {{ form.anon_name(class="p-1 mt-2 bg-white border-gray-200 rounded focus:outline-none
@@ -44,9 +43,9 @@
             focus:border-blue-700") }}
         </div>
         <div class="flex items-center justify-center w-full">
-            <button type="submit" form="res-form"
+            <button type="submit" form="thread-form"
                 class="p-4 mt-4 font-semibold leading-none text-white bg-blue-500 rounded hover:bg-blue-400 focus:ring-offset-2 focus:ring-blue-500 focus:outline-none">
-                書き込む
+                スレッドを立てる
             </button>
         </div>
     </form>

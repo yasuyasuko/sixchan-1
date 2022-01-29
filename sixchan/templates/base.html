@@ -1,0 +1,40 @@
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/img/favicon.ico" id="favicon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body class="flex flex-col min-h-full bg-gray-100">
+    <!-- Header -->
+    <nav class="px-6 py-2 bg-white shadow">
+        <div class="flex items-center max-w-screen-lg mx-auto">
+            <a href="/" class="flex-auto">
+                <img class="h-8" src="/static/img/sixchan-logo.png" alt="6channel site logo" />
+            </a>
+            <div>
+                <a href="/" class="mx-2 hover:text-blue-500">板一覧</a>
+                <a href="#" class="mx-2 hover:text-blue-500">ガイドライン</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Main -->
+    <main class="w-full max-w-screen-lg p-2 mx-auto mb-auto text-gray-600">
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Footer -->
+    <footer class="px-6 py-2 bg-gray-600">
+        <div class="flex items-center max-w-screen-lg mx-auto text-gray-100">
+            <a href="#" class="flex-auto">
+                <img class="h-6" src="/static/img/sixchan-logo.png" alt="6channel site logo" />
+            </a>
+            <p>All rights reserved 2022.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

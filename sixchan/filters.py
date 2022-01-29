@@ -1,6 +1,8 @@
+import uuid
 from datetime import datetime, timezone
 
 import pytz
+import shortuuid
 from markupsafe import Markup, escape
 
 
@@ -29,3 +31,7 @@ def datetimeformat(dt: datetime):
 
 def whoformat(who):
     return Markup(f"<span title={who}>{who[:10]}</span>")
+
+
+def uuidshort(uuid: uuid.UUID) -> str:
+    return shortuuid.encode(uuid)
