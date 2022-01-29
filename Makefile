@@ -4,10 +4,13 @@ dev:
 up:
 	docker compose up -d
 
+down:
+	docker compose down
+
 lint:
 	flake8 --exclude .venv --max-line-length 88
 
 format:
 	black .
 
-.PHONY: dev up lint format
+.PHONY: dev up down lint format
