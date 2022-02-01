@@ -111,7 +111,7 @@ class BoardCategory(UUIDMixin, TimestampMixin, db.Model):
     boards = db.relationship("Board", backref="board_category")
 
 
-def insert_mock_reses():
+def insert_mockdata():
     with open("mockdata.json", encoding="utf-8") as f:
         mock_data = json.load(f)
 
