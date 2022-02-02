@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/img/favicon.ico" id="favicon">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/toast.min.js"></script>
     <title>{% block title %}{% endblock %}</title>
 </head>
 
@@ -35,6 +36,15 @@
             <p>All rights reserved 2022.</p>
         </div>
     </footer>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <script type="text/javascript">
+        iqwerty.toast.toast("{{ message }}")
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Flask, redirect, render_template, request
+from flask import Flask, flash, redirect, render_template, request
 from flask_wtf.csrf import CSRFProtect
 
 from sixchan.config import Config
