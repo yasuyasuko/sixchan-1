@@ -1,23 +1,36 @@
 from datetime import datetime
 
 from flask import Flask, flash, redirect, render_template, request
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 from flask_wtf.csrf import CSRFProtect
 
 from sixchan.config import Config
 from sixchan.filters import authorformat, datetimeformat, whoformat, uuidshort
-from sixchan.forms import ResForm, ThreadForm
-from sixchan.models import Board, BoardCategory, Res, Thread, db
+from sixchan.forms import LoginForm, ResForm, ThreadForm
+from sixchan.models import Board, BoardCategory, Res, Thread, User, db
 from sixchan.utils import get_b64encoded_digest_string_from_words, normalize_uuid_string
 
 app = Flask(__name__)
 app.config.from_object(Config)
 csrf = CSRFProtect(app)
 db.init_app(app)
+login_manager = LoginManager(app)
 
 app.jinja_env.filters["datetimeformat"] = datetimeformat
 app.jinja_env.filters["authorformat"] = authorformat
 app.jinja_env.filters["whoformat"] = whoformat
 app.jinja_env.filters["uuidshort"] = uuidshort
+
+
+@login_manager.user_loader
+def load_user(username: str):
+    return User.query.filter_by(username=username).first()
 
 
 @app.get("/")
@@ -72,3 +85,24 @@ def thread(thread_id):
         return redirect(request.url)
 
     return render_template("thread.html", thread=thread, form=form)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.verify_password(form.password.data):
+            login_user(user, form.remember_me.data)
+            flash("ログインしました")
+            return redirect("/")
+        else:
+            flash("認証に失敗しました")
+    return render_template("login.html", form=form)
+
+
+@app.get("/logout")
+def logout():
+    logout_user()
+    flash("ログアウトしました")
+    return redirect("/")

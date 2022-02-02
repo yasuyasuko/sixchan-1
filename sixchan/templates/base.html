@@ -20,6 +20,13 @@
             <div>
                 <a href="/" class="mx-2 hover:text-blue-500">板一覧</a>
                 <a href="#" class="mx-2 hover:text-blue-500">ガイドライン</a>
+                {% if current_user.is_authenticated %}
+                <a href="/account" class="mx-2 hover:text-blue-500">マイページ</a>
+                <a href="/logout" class="mx-2 hover:text-blue-500">ログアウト</a>
+                {% else %}
+                <a href="/login" class="mx-2 hover:text-blue-500">ログイン</a>
+                <a href="/signup" class="mx-2 hover:text-blue-500">新規登録</a>
+                {% endif %}
             </div>
         </div>
     </nav>

@@ -1,8 +1,16 @@
+from email.policy import default
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length, Optional
+from wtforms import BooleanField, PasswordField, StringField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 
-from sixchan.config import ANON_NAME_MAX_LENGTH, BODY_MAX_LENGTH, THREAD_NAME_MAX_LENGTH
+from sixchan.config import (
+    ANON_NAME_MAX_LENGTH,
+    BODY_MAX_LENGTH,
+    PASSWORD_REGEX,
+    THREAD_NAME_MAX_LENGTH,
+    USERNAME_MAX_LENGTH,
+    USERNAME_REGEX,
+)
 
 
 class ResForm(FlaskForm):
@@ -36,4 +44,23 @@ class ThreadForm(FlaskForm):
     body = TextAreaField(
         "コメント内容",
         validators=[DataRequired(), Length(max=BODY_MAX_LENGTH)],
+    )
+
+
+class LoginForm(FlaskForm):
+    username = StringField(
+        "ユーザー名",
+        validators=[
+            DataRequired(),
+            Regexp(USERNAME_REGEX),
+            Length(max=USERNAME_MAX_LENGTH),
+        ],
+    )
+    password = PasswordField(
+        "パスワード",
+        validators=[DataRequired(), Regexp(PASSWORD_REGEX)],
+    )
+    remember_me = BooleanField(
+        "ログインしたままにする",
+        default=False,
     )

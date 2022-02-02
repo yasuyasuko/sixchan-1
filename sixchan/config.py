@@ -1,6 +1,7 @@
 ANON_NAME_MAX_LENGTH = 50
 DISPLAY_NAME_MAX_LENGTH = 50
 USERNAME_MAX_LENGTH = 15
+USERNAME_REGEX = r"^\w+$"
 EMAIL_MAX_LENGTH = 255
 PASSWORD_REGEX = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
 

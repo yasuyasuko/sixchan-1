@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}ログイン{% endblock %}
+{% block content %}
+<div class="flex justify-center">
+    <div class="w-3/4 bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+        <h1 class="text-4xl text-center font-thin">おかえりなさい</h1>
+        <form action="" method="POST" id="login-form">
+            {{ form.csrf_token }}
+            <div class="flex flex-col mt-1">
+                {{ form.username.label }}
+                {{ form.username(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
+                focus:border-blue-700") }}
+            </div>
+            <div class="flex flex-col mt-1">
+                {{ form.password.label }}
+                {{ form.password(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
+                focus:border-blue-700") }}
+            </div>
+            <div class="mt-1">
+                {{form.remember_me(class="mx-1")}}
+                {{form.remember_me.label}}
+            </div>
+        </form>
+        <div class="mt-2 text-center">
+            <button type="submit" form="login-form"
+                class="bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
+                ログイン
+            </button>
+            <div class="mt-2">
+                <a class="font-bold text-sm hover:text-blue-500" href="#">
+                    パスワードを忘れてしまいましたか?
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
