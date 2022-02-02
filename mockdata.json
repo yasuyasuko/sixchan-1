@@ -1,10 +1,24 @@
 {
+    "users": [
+        {
+            "id": "105571d8-4076-456b-87ad-a4f15257aeed",
+            "username": "gregor_samsa",
+            "display_name": "Gregor Samsa",
+            "email": "gregor_samsa@example.com",
+            "password": "pass123!",
+            "activated": true,
+            "introduction": "Hello, I'm Gregor Samsa!",
+            "created_at": "2022-01-01 00:00:00.000",
+            "updated_at": "2022-01-01 00:00:00.000"
+        }
+    ],
     "reses": [
         {
             "id": "3786506f-4ba7-46d4-a271-154d595ad128",
             "number": 1,
             "anon_name": null,
             "anon_email": null,
+            "author_id": null,
             "who": "xMpCOKC5I4INzFCab3WEmw",
             "body": "ぬるぽ",
             "created_at": "2022-01-01 00:00:01.000",
@@ -15,6 +29,7 @@
             "number": 2,
             "anon_name": "6ちゃんねら",
             "anon_email": null,
+            "author_id": null,
             "who": "yB5yjZ1ML2NvBn+JzBSGLA",
             "body": "ぬるぽぽ",
             "created_at": "2022-01-01 00:00:02.000",
@@ -25,6 +40,7 @@
             "number": 3,
             "anon_name": null,
             "anon_email": "null@example.com",
+            "author_id": null,
             "who": "7MvIfktc4v4oMI/Z8qe68w",
             "body": "ぬるぽぽぽ",
             "created_at": "2022-01-01 00:00:03.000",
@@ -35,9 +51,21 @@
             "number": 4,
             "anon_name": "suwa",
             "anon_email": "suwa@example.com",
+            "author_id": null,
             "who": "qH/2eaLz5x2RgaZ7dUISLA",
             "body": "ぬるぽぽぽぽ",
             "created_at": "2022-01-01 00:00:04.000",
+            "thread_id": "d2cc5435-db0f-4e91-b4b0-bdf600845870"
+        },
+        {
+            "id": "bdf4d5b5-baff-4c92-be90-bb55651daf18",
+            "number": 5,
+            "anon_name": null,
+            "anon_email": null,
+            "author_id": "105571d8-4076-456b-87ad-a4f15257aeed",
+            "who": "R7zlx09Yn0hn29V+nKn4CA",
+            "body": "登録ユーザによるぬるぽ",
+            "created_at": "2022-01-01 00:00:05.000",
             "thread_id": "d2cc5435-db0f-4e91-b4b0-bdf600845870"
         }
     ],

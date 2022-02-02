@@ -2,17 +2,21 @@ import json
 import uuid
 from datetime import datetime
 
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID as PostgreUUID
 from sqlalchemy.types import CHAR, TypeDecorator
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from sixchan.config import (
     ANON_NAME_MAX_LENGTH,
     BOARD_CATEGORY_NAME_MAX_LENGTH,
     BOARD_NAME_MAX_LENGTH,
     BODY_MAX_LENGTH,
+    DISPLAY_NAME_MAX_LENGTH,
     EMAIL_MAX_LENGTH,
     THREAD_NAME_MAX_LENGTH,
+    USERNAME_MAX_LENGTH,
 )
 
 db = SQLAlchemy()
@@ -59,11 +63,42 @@ class TimestampMixin:
     )
 
 
+class User(UUIDMixin, TimestampMixin, UserMixin, db.Model):
+    __tablename__ = "users"
+    username = db.Column(db.String(USERNAME_MAX_LENGTH), unique=True, nullable=False)
+    display_name = db.Column(db.String(DISPLAY_NAME_MAX_LENGTH), nullable=True)
+    email = db.Column(db.String(EMAIL_MAX_LENGTH), unique=True, nullable=True)
+    password_hash = db.Column(db.String(128), nullable=False)
+    activated = db.Column(db.Boolean, default=False, nullable=False)
+    introduction = db.Column(db.Text, nullable=False)
+    reses = db.relationship("Res", backref="author")
+
+    def get_id(self):
+        """flask-login requires this method to identify users"""
+        return self.username
+
+    def is_active(self):
+        """flask-login requires this method to know whether or not a user is active"""
+        return self.activated
+
+    @property
+    def password(self):
+        raise AttributeError("password is not a readable")
+
+    @password.setter
+    def password(self, password: str):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password: str):
+        return check_password_hash(self.password_hash, password)
+
+
 class Res(UUIDMixin, TimestampMixin, db.Model):
     __tablename__ = "reses"
     number = db.Column(db.Integer, nullable=False)
     anon_name = db.Column(db.String(ANON_NAME_MAX_LENGTH), nullable=True)
     anon_email = db.Column(db.String(EMAIL_MAX_LENGTH), nullable=True)
+    author_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=True)
     who = db.Column(db.String(22), nullable=False)
     body = db.Column(db.Text, nullable=False)
     thread_id = db.Column(UUID(), db.ForeignKey("threads.id"), nullable=False)
@@ -141,5 +176,20 @@ def insert_mockdata():
         created_at = datetime.fromisoformat(res.pop("created_at"))
         thread_id = uuid.UUID(res.pop("thread_id"))
         db.session.add(Res(id=id, created_at=created_at, thread_id=thread_id, **res))
+
+    for user in mock_data["users"]:
+        id = uuid.UUID(user.pop("id"))
+        created_at = datetime.fromisoformat(user.pop("created_at"))
+        updated_at = datetime.fromisoformat(user.pop("updated_at"))
+        password_hash = generate_password_hash(user.pop("password"))
+        db.session.add(
+            User(
+                id=id,
+                created_at=created_at,
+                updated_at=updated_at,
+                password_hash=password_hash,
+                **user
+            )
+        )
 
     db.session.commit()
