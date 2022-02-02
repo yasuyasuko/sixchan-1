@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Flask, flash, redirect, render_template, request
 from flask_login import (
@@ -11,15 +11,17 @@ from flask_login import (
 from flask_wtf.csrf import CSRFProtect
 
 from sixchan.config import Config
-from sixchan.filters import authorformat, datetimeformat, whoformat, uuidshort
-from sixchan.forms import LoginForm, ResForm, ThreadForm
-from sixchan.models import Board, BoardCategory, Res, Thread, User, db
+from sixchan.email import mail, send_email
+from sixchan.filters import authorformat, datetimeformat, uuidshort, whoformat
+from sixchan.forms import AccountForm, LoginForm, ResForm, SignupForm, ThreadForm
+from sixchan.models import ActivationToken, Board, BoardCategory, Res, Thread, User, db
 from sixchan.utils import get_b64encoded_digest_string_from_words, normalize_uuid_string
 
 app = Flask(__name__)
 app.config.from_object(Config)
 csrf = CSRFProtect(app)
 db.init_app(app)
+mail.init_app(app)
 login_manager = LoginManager(app)
 
 app.jinja_env.filters["datetimeformat"] = datetimeformat
@@ -106,3 +108,76 @@ def logout():
     logout_user()
     flash("ログアウトしました")
     return redirect("/")
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    form = SignupForm()
+    if form.validate_on_submit():
+        if User.query.filter_by(username=form.username.data).first():
+            flash("そのユーザー名は既に使われています")
+            return render_template("signup.html", form=form)
+        if User.query.filter_by(email=form.email.data).first():
+            flash("そのメールアドレスはすでに使われいます")
+            return render_template("signup.html", form=form)
+
+        user = User(
+            username=form.username.data,
+            display_name=form.display_name.data,
+            email=form.email.data,
+            activated=False,
+        )
+        user.password = form.password.data
+        db.session.add(user)
+        db.session.commit()
+
+        token_string = ActivationToken.generate(user, timedelta(days=1))
+        send_email(
+            user.email,
+            "6channel ご本人確認",
+            "mail/activate",
+            activation_link=f"{request.url_root}activate/{token_string}",
+        )
+        flash("確認メールを送信しました\n24時間以内にメールからアクティベーションを完了してください")
+        return redirect("/")
+
+    return render_template("signup.html", form=form)
+
+
+@app.get("/activate/<token_string>")
+def activate(token_string):
+    token = ActivationToken.query.get(token_string)
+    if not token:
+        flash("無効なアクティベーショントークンです")
+    if token.expired:
+        flash("アクティベーショントークンの有効期限が切れています")
+        # TODO: reissue token?
+        return redirect("/")
+
+    user = User.query.join(ActivationToken, User.id == ActivationToken.user_id).first()
+    if user.activated:
+        flash("既にアクティベーション済みです")
+        return redirect("/login")
+    else:
+        user.activated = True
+        db.session.commit()
+        login_user(user)
+        flash("アクティベーションが完了しました")
+        return redirect("/")
+
+
+@app.route("/account", methods=["GET", "POST"])
+@login_required
+def account():
+    form = AccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.display_name = form.display_name.data
+        db.session.commit()
+        flash("ユーザー情報を更新しました")
+        return redirect(request.url)
+    else:
+        form.username.data = current_user.username
+        form.display_name.data = current_user.display_name
+
+    return render_template("account.html", form=form)

@@ -9,3 +9,9 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     ports:
       - 54321:5432
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - 11025:1025
+      - 18025:8025

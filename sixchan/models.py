@@ -1,6 +1,7 @@
 import json
+import secrets
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -63,6 +64,26 @@ class TimestampMixin:
     )
 
 
+class ActivationToken(db.Model):
+    __tablename__ = "activation_tokens"
+    token = db.Column(db.String(128), primary_key=True, nullable=False)
+    user_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+
+    @classmethod
+    def generate(cls, user, expire_duration: timedelta) -> str:
+        token = secrets.token_urlsafe()
+        expires_at = datetime.utcnow() + expire_duration
+        obj = cls(token=token, user_id=user.id, expires_at=expires_at)
+        db.session.add(obj)
+        db.session.commit()
+        return token
+
+    @property
+    def expired(self):
+        return self.expires_at < datetime.utcnow()
+
+
 class User(UUIDMixin, TimestampMixin, UserMixin, db.Model):
     __tablename__ = "users"
     username = db.Column(db.String(USERNAME_MAX_LENGTH), unique=True, nullable=False)
@@ -70,7 +91,7 @@ class User(UUIDMixin, TimestampMixin, UserMixin, db.Model):
     email = db.Column(db.String(EMAIL_MAX_LENGTH), unique=True, nullable=True)
     password_hash = db.Column(db.String(128), nullable=False)
     activated = db.Column(db.Boolean, default=False, nullable=False)
-    introduction = db.Column(db.Text, nullable=False)
+    introduction = db.Column(db.Text, nullable=True)
     reses = db.relationship("Res", backref="author")
 
     def get_id(self):
