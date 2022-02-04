@@ -43,11 +43,15 @@
             <p>All rights reserved 2022.</p>
         </div>
     </footer>
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    {% for message in messages %}
+    {% for level, message in messages %}
+    {% set background = get_flash_color(level)%}
     <script type="text/javascript">
-        iqwerty.toast.toast("{{ message }}")
+        const options = {
+            style: { main: { background: "{{ background }}" } }
+        }
+        iqwerty.toast.toast("{{ message }}", options)
     </script>
     {% endfor %}
     {% endif %}

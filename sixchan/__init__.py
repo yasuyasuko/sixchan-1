@@ -10,7 +10,7 @@ from flask_login import (
 )
 from flask_wtf.csrf import CSRFProtect
 
-from sixchan.config import Config
+from sixchan.config import FLASH_LEVEL, Config
 from sixchan.email import mail, send_email
 from sixchan.filters import authorformat, datetimeformat, uuidshort, whoformat
 from sixchan.forms import AccountForm, LoginForm, ResForm, SignupForm, ThreadForm
@@ -28,11 +28,19 @@ app.add_template_filter(datetimeformat)
 app.add_template_filter(authorformat)
 app.add_template_filter(whoformat)
 app.add_template_filter(uuidshort)
+app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
 
 
 @login_manager.user_loader
 def load_user(username: str):
     return User.query.filter_by(username=username).first()
+
+
+if app.config["DEBUG"]:
+
+    @app.get("/debug")
+    def debug():
+        return "this is a page for debug"
 
 
 @app.get("/")
@@ -96,17 +104,17 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
-            flash("ログインしました")
+            flash("ログインしました", FLASH_LEVEL.SUCCESS)
             return redirect("/")
         else:
-            flash("認証に失敗しました")
+            flash("認証に失敗しました", FLASH_LEVEL.ERROR)
     return render_template("login.html", form=form)
 
 
 @app.get("/logout")
 def logout():
     logout_user()
-    flash("ログアウトしました")
+    flash("ログアウトしました", FLASH_LEVEL.SUCCESS)
     return redirect("/")
 
 
@@ -115,10 +123,10 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         if User.query.filter_by(username=form.username.data).first():
-            flash("そのユーザー名は既に使われています")
+            flash("そのユーザー名は既に使われています", FLASH_LEVEL.ERROR)
             return render_template("signup.html", form=form)
         if User.query.filter_by(email=form.email.data).first():
-            flash("そのメールアドレスはすでに使われいます")
+            flash("そのメールアドレスはすでに使われいます", FLASH_LEVEL.ERROR)
             return render_template("signup.html", form=form)
 
         user = User(
@@ -138,7 +146,7 @@ def signup():
             "mail/activate",
             activation_link=f"{request.url_root}activate/{token_string}",
         )
-        flash("確認メールを送信しました。24時間以内にメールからアクティベーションを完了してください")
+        flash("確認メールを送信しました。24時間以内にメールからアクティベーションを完了してください", FLASH_LEVEL.SUCCESS)
         return redirect("/")
 
     return render_template("signup.html", form=form)
@@ -148,21 +156,21 @@ def signup():
 def activate(token_string):
     token = ActivationToken.query.get(token_string)
     if not token:
-        flash("無効なアクティベーショントークンです")
+        flash("無効なアクティベーショントークンです", FLASH_LEVEL.ERROR)
     if token.expired:
-        flash("アクティベーショントークンの有効期限が切れています")
+        flash("アクティベーショントークンの有効期限が切れています", FLASH_LEVEL.ERROR)
         # TODO: reissue token?
         return redirect("/")
 
     user = User.query.join(ActivationToken, User.id == ActivationToken.user_id).first()
     if user.activated:
-        flash("既にアクティベーション済みです")
+        flash("既にアクティベーション済みです", FLASH_LEVEL.INFO)
         return redirect("/login")
     else:
         user.activated = True
         db.session.commit()
         login_user(user)
-        flash("アクティベーションが完了しました")
+        flash("アクティベーションが完了しました", FLASH_LEVEL.SUCCESS)
         return redirect("/")
 
 
@@ -174,7 +182,7 @@ def account():
         current_user.username = form.username.data
         current_user.display_name = form.display_name.data
         db.session.commit()
-        flash("ユーザー情報を更新しました")
+        flash("ユーザー情報を更新しました", FLASH_LEVEL.SUCCESS)
         return redirect(request.url)
     else:
         form.username.data = current_user.username
