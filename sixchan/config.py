@@ -34,6 +34,21 @@ class FLASH_LEVEL:
         return colors.get(level, FLASH_LEVEL.UNKNOWN_COLOR)
 
 
+class FLASH_MESSAGE:
+    LOGIN = "ログインしました"
+    LOGIN_REQUIRED = "このページにアクセスするためにはログインが必要です"
+    LOGOUT = "ログアウトしました"
+    AUTHENTICATION_FAILED = "認証に失敗しました"
+    USERNAME_ALREADY_EXISTS = "そのユーザー名は既に使われています"
+    EMAIL_ALREADY_EXISTS = "そのメールアドレスはすでに使われいます"
+    ACTIVATION_LINK_SEND = "確認メールを送信しました。24時間以内にメールからアクティベーションを完了してください"
+    ACTIVATION_TOKEN_INVALID = "無効なアクティベーショントークンです"
+    ACTIVATION_TOKEN_EXPIRED = "アクティベーショントークンの有効期限が切れています"
+    ACTIVATION_ALREADY_DONE = "既にアクティベーション済みです"
+    ACTIVATION_COMPLETE = "アクティベーションが完了しました"
+    USER_INFO_UPDATE = "ユーザー情報を更新しました"
+
+
 class Config:
     MAIL_SERVER = "localhost"
     MAIL_PORT = 11025
