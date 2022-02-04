@@ -2,6 +2,7 @@
 Youtubeで投稿している"【Python】Flaskでつくる5ちゃんねる風掲示板Webアプリ"シリーズのリポジトリです。
 - Part1: https://youtu.be/HZxfTI4LjO4
 - Part2: https://youtu.be/gQuEV3B6DuI
+- Part3: https://youtu.be/_Jyis3245Ys
 
 ## Quickstart
 以下でリポジトリをクローンして、開発サーバを立ち上げることができます。
