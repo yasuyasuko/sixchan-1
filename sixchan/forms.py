@@ -80,7 +80,7 @@ class SignupForm(FlaskForm):
         ],
     )
     display_name = StringField(
-        "表示名",
+        "表示名(省略可)",
         validators=[Length(max=DISPLAY_NAME_MAX_LENGTH)],
     )
     password = PasswordField(
