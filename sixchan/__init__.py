@@ -24,10 +24,10 @@ db.init_app(app)
 mail.init_app(app)
 login_manager = LoginManager(app)
 
-app.jinja_env.filters["datetimeformat"] = datetimeformat
-app.jinja_env.filters["authorformat"] = authorformat
-app.jinja_env.filters["whoformat"] = whoformat
-app.jinja_env.filters["uuidshort"] = uuidshort
+app.add_template_filter(datetimeformat)
+app.add_template_filter(authorformat)
+app.add_template_filter(whoformat)
+app.add_template_filter(uuidshort)
 
 
 @login_manager.user_loader
