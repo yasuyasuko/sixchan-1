@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macro.html" import render_text_field, render_submit_button %}
 {% block title %}マイページ{% endblock %}
 {% block content %}
 <div class="flex justify-center">
@@ -6,21 +7,10 @@
         <h1 class="text-4xl text-center font-thin">ユーザー情報</h1>
         <form action="" method="POST" id="account-form">
             {{ form.csrf_token }}
-            <div class="flex flex-col mt-1">
-                {{ form.username.label }}
-                {{ form.username(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700")}}
-            </div>
-            <div class="flex flex-col mt-1">
-                {{ form.display_name.label }}
-                {{ form.display_name(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700") }}
-            </div>
+            {{ render_text_field(form.username)}}
+            {{ render_text_field(form.display_name)}}
             <div class="mt-2 text-center">
-                <button type="submit" form="account-form"
-                    class="bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
-                    保存
-                </button>
+                {{ render_submit_button("保存", "account-form") }}
             </div>
         </form>
     </div>

@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% from "macro.html" import render_text_field, render_textarea_field, render_submit_button %}
 {% block title %}{{ thread.name }}{% endblock %}
 {% block content %}
-<!-- Main.ThreadTittle -->
+<!-- ThreadTittle -->
 <div>
     <div class="flex">
         <div class="p-2 bg-blue-500 rounded-lg">
@@ -11,7 +12,7 @@
     </div>
     <h1 class="text-xl font-bold">{{ thread.name }}</h1>
 </div>
-<!-- Main.Reses -->
+<!-- Reses -->
 <div>
     {% for res in thread.reses %}
     <div class="p-2 mt-2 bg-white rounded-lg">
@@ -23,31 +24,16 @@
     </div>
     {% endfor %}
 </div>
-<!-- Main.Form -->
+<!-- Form -->
 <div>
     <p class="text-lg font-bold">レスを投稿する</p>
     <form action="" , method="POST" id="res-form">
         {{ form.csrf_token }}
-        <div class="flex flex-col mt-1">
-            {{ form.anon_name.label(class="font-semibold") }}
-            {{ form.anon_name(class="p-1 mt-2 bg-white border-gray-200 rounded focus:outline-none
-            focus:border-blue-700") }}
-        </div>
-        <div class="flex flex-col mt-1">
-            {{ form.anon_email.label(class="font-semibold") }}
-            {{ form.anon_email(class="p-1 mt-2 bg-white border-gray-200 rounded focus:outline-none
-            focus:border-blue-700") }}
-        </div>
-        <div class="flex flex-col mt-1">
-            {{ form.body.label(class="font-semibold") }}
-            {{ form.body(class="h-40 p-1 mt-2 bg-white border-gray-200 rounded focus:outline-none
-            focus:border-blue-700") }}
-        </div>
-        <div class="flex items-center justify-center w-full">
-            <button type="submit" form="res-form"
-                class="p-4 mt-4 font-semibold leading-none text-white bg-blue-500 rounded hover:bg-blue-400 focus:ring-offset-2 focus:ring-blue-500 focus:outline-none">
-                書き込む
-            </button>
+        {{ render_text_field(form.anon_name)}}
+        {{ render_text_field(form.anon_email)}}
+        {{ render_textarea_field(form.body)}}
+        <div class="mt-2 flex items-center justify-center w-full">
+            {{ render_submit_button("書き込む", "res-form") }}
         </div>
     </form>
 </div>

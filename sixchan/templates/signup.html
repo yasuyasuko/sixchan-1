@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macro.html" import render_text_field, render_checkbox_field, render_submit_button %}
 {% block title %}新規登録{% endblock %}
 {% block content %}
 <div class="flex justify-center">
@@ -6,40 +7,14 @@
         <h1 class="text-4xl text-center font-thin">ユーザー新規登録</h1>
         <form action="" method="POST" id="signup-form">
             {{ form.csrf_token }}
-            <div class="flex flex-col mt-1">
-                {{ form.email.label }}
-                {{ form.email(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700") }}
-            </div>
-            <div class="flex flex-col mt-1">
-                {{ form.username.label }}
-                {{ form.username(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700") }}
-            </div>
-            <div class="flex flex-col mt-1">
-                {{ form.display_name.label }}
-                {{ form.display_name(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700") }}
-            </div>
-            <div class="flex flex-col mt-1">
-                {{ form.password.label }}
-                {{ form.password(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700") }}
-            </div>
-            <div class="flex flex-col mt-1">
-                {{ form.password_confirmation.label }}
-                {{ form.password_confirmation(class="p-1 mt-2 bg-white border border-gray-300 rounded focus:outline-none
-                focus:border-blue-700") }}
-            </div>
-            <div class="mt-1">
-                {{form.remember_me(class="mx-1")}}
-                {{form.remember_me.label}}
-            </div>
+            {{ render_text_field(form.email) }}
+            {{ render_text_field(form.username) }}
+            {{ render_text_field(form.display_name) }}
+            {{ render_text_field(form.password) }}
+            {{ render_text_field(form.password_confirmation) }}
+            {{ render_checkbox_field(form.remember_me) }}
             <div class="mt-2 text-center">
-                <button type="submit" form="signup-form"
-                    class="bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
-                    新規登録
-                </button>
+                {{ render_submit_button("新規登録", "signup-form") }}
             </div>
         </form>
     </div>
