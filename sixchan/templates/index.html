@@ -3,17 +3,17 @@
 {% block content %}
 <div class="flex flex-col items-center">
     <h1 class="mt-2"><img class="max-w-xs" src="/static/img/sixchan-logo.png" alt="6channel site logo"></h1>
-    <h2 class="font-bold mt-1 text-xl">「C」から「Visual Basic」までを手広くカバーする巨大掲示板群へようこそ！</h2>
+    <h2 class="mt-1 text-xl font-bold">「C」から「Visual Basic」までを手広くカバーする巨大掲示板群へようこそ！</h2>
     <p><a class="text-blue-500" href="/guideline">ガイドライン</a>を一読してからご利用ください</p>
 </div>
-<div class="bg-white rounded-lg mt-4">
-    <div class="bg-blue-500 p-2 text-white text-lg font-bold rounded-t-lg">板一覧</div>
+<div class="mt-4 bg-white rounded-lg">
+    <div class="p-2 text-lg font-bold text-white bg-blue-500 rounded-t-lg">板一覧</div>
     <div class="p-2">
         {% for category in board_categories %}
         <p class="font-semibold text-green-500">{{ category.name }}</p>
         <div class="flex flex-wrap">
             {% for board in category.boards %}
-            <a href="/boards/{{ board.id | uuidshort }}" class="hover:text-blue-500 mx-1 mt-1">{{board.name}}</a>
+            <a href="/boards/{{ board.id | uuidshort }}" class="mx-1 mt-1 hover:text-blue-500">{{board.name}}</a>
             {% endfor %}
         </div>
         {% endfor %}

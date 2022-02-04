@@ -3,8 +3,8 @@
 {% block title %}ログイン{% endblock %}
 {% block content %}
 <div class="flex justify-center">
-    <div class="w-3/4 bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-        <h1 class="text-4xl text-center font-thin">おかえりなさい</h1>
+    <div class="flex flex-col w-3/4 px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-lg">
+        <h1 class="text-4xl font-thin text-center">おかえりなさい</h1>
         <form action="" method="POST" id="login-form">
             {{ form.csrf_token }}
             {{ render_text_field(form.username) }}
@@ -13,7 +13,7 @@
             <div class="mt-2 text-center">
                 {{ render_submit_button("ログイン", "login-form") }}
                 <div class="mt-2">
-                    <a class="font-bold text-sm hover:text-blue-500" href="#">
+                    <a class="text-sm font-bold hover:text-blue-500" href="#">
                         パスワードを忘れてしまいましたか?
                     </a>
                 </div>

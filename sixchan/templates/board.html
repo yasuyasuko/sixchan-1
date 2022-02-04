@@ -3,11 +3,11 @@
 {% block title %}{{ board.name }}{% endblock %}
 {% block content %}
 <div>
-    <h2 class="font-bold mt-1 text-xl">{{ board.name }}</h2>
+    <h2 class="mt-1 text-xl font-bold">{{ board.name }}</h2>
     <p>{{board.description}}</p>
 </div>
-<div class="bg-white rounded-lg mt-4">
-    <div class="bg-blue-500 p-2 text-white text-lg font-bold rounded-t-lg">スレッド一覧</div>
+<div class="mt-4 bg-white rounded-lg">
+    <div class="p-2 text-lg font-bold text-white bg-blue-500 rounded-t-lg">スレッド一覧</div>
     <div class="p-2">
         {% for thread in board.threads %}
         <div>
@@ -19,7 +19,7 @@
         {% endfor %}
     </div>
 </div>
-<div class="border my-2"></div>
+<div class="my-2 border"></div>
 <div>
     <form action="" method="POST" id="thread-form">
         {{ form.csrf_token }}
@@ -27,7 +27,7 @@
         {{ render_text_field(form.anon_name) }}
         {{ render_text_field(form.anon_email) }}
         {{ render_textarea_field(form.body) }}
-        <div class="mt-4 flex items-center justify-center w-full">
+        <div class="flex items-center justify-center w-full mt-4">
             {{ render_submit_button("スレッドを立てる", "thread-form") }}
         </div>
     </form>
