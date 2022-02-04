@@ -138,7 +138,7 @@ def signup():
             "mail/activate",
             activation_link=f"{request.url_root}activate/{token_string}",
         )
-        flash("確認メールを送信しました\n24時間以内にメールからアクティベーションを完了してください")
+        flash("確認メールを送信しました。24時間以内にメールからアクティベーションを完了してください")
         return redirect("/")
 
     return render_template("signup.html", form=form)
