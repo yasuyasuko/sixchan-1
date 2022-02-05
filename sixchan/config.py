@@ -46,6 +46,7 @@ class FLASH_MESSAGE:
     ACTIVATION_TOKEN_EXPIRED = "アクティベーショントークンの有効期限が切れています"
     ACTIVATION_ALREADY_DONE = "既にアクティベーション済みです"
     ACTIVATION_COMPLETE = "アクティベーションが完了しました"
+    ACTIVATION_INCOMPLETE = "アクティベーションが完了していません"
     USER_INFO_UPDATE = "ユーザー情報を更新しました"
 
 

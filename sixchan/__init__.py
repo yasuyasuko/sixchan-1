@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from flask import Flask, flash, redirect, render_template, request
+from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import (
     LoginManager,
     current_user,
@@ -71,9 +71,10 @@ def board(board_id):
         thread.reses.append(res)
         db.session.add(thread)
         db.session.commit()
-        return redirect(request.url)
+        return redirect(url_for("board", board_id=board_id, _anchor="thread-form"))
 
-    return render_template("board.html", board=board, form=form)
+    anchor = "thread-form" if form.is_submitted() else None
+    return render_template("board.html", board=board, form=form, anchor=anchor)
 
 
 @app.route("/threads/<thread_id>", methods=["GET", "POST"])
@@ -94,20 +95,24 @@ def thread(thread_id):
         )
         thread.reses.append(res)
         db.session.commit()
-        return redirect(request.url)
+        return redirect(url_for("thread", thread_id=thread_id, _anchor="res-form"))
 
-    return render_template("thread.html", thread=thread, form=form)
+    anchor = "res-form" if form.is_submitted() else None
+    return render_template("thread.html", thread=thread, form=form, anchor=anchor)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and user.verify_password(form.password.data):
+        user = User.query.filter_by(username=form.username.data).first_or_404()
+        if not user.activated:
+            flash(FLASH_MESSAGE.ACTIVATION_INCOMPLETE, FLASH_LEVEL.ERROR)
+            return redirect(url_for("index"))
+        if user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             flash(FLASH_MESSAGE.LOGIN, FLASH_LEVEL.SUCCESS)
-            return redirect("/")
+            return redirect(url_for("index"))
         else:
             flash(FLASH_MESSAGE.AUTHENTICATION_FAILED, FLASH_LEVEL.ERROR)
     return render_template("login.html", form=form)
@@ -117,7 +122,7 @@ def login():
 def logout():
     logout_user()
     flash(FLASH_MESSAGE.LOGOUT, FLASH_LEVEL.SUCCESS)
-    return redirect("/")
+    return redirect(url_for("index"))
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -146,10 +151,12 @@ def signup():
             user.email,
             "6channel ご本人確認",
             "mail/activate",
-            activation_link=f"{request.url_root}activate/{token_string}",
+            activation_link=url_for(
+                "activate", token_string=token_string, _external=True
+            ),
         )
         flash(FLASH_MESSAGE.ACTIVATION_LINK_SEND, FLASH_LEVEL.SUCCESS)
-        return redirect("/")
+        return redirect(url_for("index"))
 
     return render_template("signup.html", form=form)
 
@@ -159,21 +166,23 @@ def activate(token_string):
     token = ActivationToken.query.get(token_string)
     if not token:
         flash(FLASH_MESSAGE.ACTIVATION_TOKEN_INVALID, FLASH_LEVEL.ERROR)
+        return redirect(url_for("index"))
     if token.expired:
         flash(FLASH_MESSAGE.ACTIVATION_TOKEN_EXPIRED, FLASH_LEVEL.ERROR)
         # TODO: reissue token?
-        return redirect("/")
+        return redirect(url_for("index"))
 
     user = User.query.join(ActivationToken, User.id == ActivationToken.user_id).first()
+    print(user.activated)
     if user.activated:
         flash(FLASH_MESSAGE.ACTIVATION_ALREADY_DONE, FLASH_LEVEL.INFO)
-        return redirect("/login")
+        return redirect(url_for("login"))
     else:
         user.activated = True
         db.session.commit()
         login_user(user)
         flash(FLASH_MESSAGE.ACTIVATION_COMPLETE, FLASH_LEVEL.SUCCESS)
-        return redirect("/")
+        return redirect(url_for("index"))
 
 
 @app.route("/account", methods=["GET", "POST"])
@@ -185,8 +194,9 @@ def account():
         current_user.display_name = form.display_name.data
         db.session.commit()
         flash(FLASH_MESSAGE.USER_INFO_UPDATE, FLASH_LEVEL.SUCCESS)
-        return redirect(request.url)
-    else:
+        return redirect(url_for("account"))
+
+    if not form.is_submitted():
         form.username.data = current_user.username
         form.display_name.data = current_user.display_name
 

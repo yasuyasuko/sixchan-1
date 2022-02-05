@@ -11,7 +11,7 @@
     <div class="p-2">
         {% for thread in board.threads %}
         <div>
-            <a class="font-semibold text-blue-500" href="/threads/{{ thread.id | uuidshort }}">
+            <a class="font-semibold text-blue-500" href="{{ url_for('thread', thread_id=thread.id | uuidshort) }}">
                 {{ thread.name }}({{ thread.reses_count }})
             </a>
             <span class="text-sm">...最後の投稿: {{ thread.last_posted_at | datetimeformat }}</span>
