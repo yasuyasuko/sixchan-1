@@ -173,7 +173,6 @@ def activate(token_string):
         return redirect(url_for("index"))
 
     user = User.query.join(ActivationToken, User.id == ActivationToken.user_id).first()
-    print(user.activated)
     if user.activated:
         flash(FLASH_MESSAGE.ACTIVATION_ALREADY_DONE, FLASH_LEVEL.INFO)
         return redirect(url_for("login"))
