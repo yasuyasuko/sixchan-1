@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, abort, flash, redirect, render_template, request, url_for
 from flask_login import (
     LoginManager,
     current_user,
@@ -45,6 +45,11 @@ if app.config["DEBUG"]:
         return "this is a page for debug"
 
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
+
+
 @app.get("/")
 def index():
     board_categories = BoardCategory.query.all()
@@ -53,8 +58,12 @@ def index():
 
 @app.route("/boards/<board_id>", methods=["GET", "POST"])
 def board(board_id):
-    board_uuid = normalize_uuid_string(board_id)
-    board = Board.query.get(board_uuid)
+    try:
+        board_uuid = normalize_uuid_string(board_id)
+    except ValueError:
+        abort(404)
+
+    board = Board.query.get_or_404(board_uuid)
 
     form = ThreadForm()
     if form.validate_on_submit():
@@ -76,8 +85,12 @@ def board(board_id):
 
 @app.route("/threads/<thread_id>", methods=["GET", "POST"])
 def thread(thread_id):
-    thread_uuid = normalize_uuid_string(thread_id)
-    thread = Thread.query.get(thread_uuid)
+    try:
+        thread_uuid = normalize_uuid_string(thread_id)
+    except ValueError:
+        abort(404)
+
+    thread = Thread.query.get_or_404(thread_uuid)
 
     form = ResForm()
     if form.validate_on_submit():
@@ -138,7 +151,6 @@ def signup():
             display_name=form.display_name.data,
         )
         token_string = ActivationToken.generate(new_user, timedelta(days=1))
-        print(new_user.id)
         db.session.commit()
         send_email(
             new_user.email,
