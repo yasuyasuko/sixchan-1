@@ -2,6 +2,7 @@ import json
 import secrets
 import uuid
 from datetime import datetime, timedelta
+from typing import Optional
 
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -13,12 +14,12 @@ from sixchan.config import (
     ANON_NAME_MAX_LENGTH,
     BOARD_CATEGORY_NAME_MAX_LENGTH,
     BOARD_NAME_MAX_LENGTH,
-    BODY_MAX_LENGTH,
     DISPLAY_NAME_MAX_LENGTH,
     EMAIL_MAX_LENGTH,
     THREAD_NAME_MAX_LENGTH,
     USERNAME_MAX_LENGTH,
 )
+from sixchan.utils import get_b64encoded_digest_string_from_words
 
 db = SQLAlchemy()
 
@@ -76,7 +77,6 @@ class ActivationToken(db.Model):
         expires_at = datetime.utcnow() + expire_duration
         obj = cls(token=token, user_id=user.id, expires_at=expires_at)
         db.session.add(obj)
-        db.session.commit()
         return token
 
     @property
@@ -113,6 +113,28 @@ class User(UUIDMixin, TimestampMixin, UserMixin, db.Model):
     def verify_password(self, password: str):
         return check_password_hash(self.password_hash, password)
 
+    @classmethod
+    def signup(
+        cls,
+        username: str,
+        email: str,
+        password: str,
+        display_name: Optional[str] = None,
+    ):
+        new_user = cls(
+            username=username,
+            display_name=display_name or username,
+            email=email,
+            activated=False,
+        )
+        new_user.password = password
+        db.session.add(new_user)
+        db.session.flush()
+        return new_user
+
+    def activate(self):
+        self.activated = True
+
 
 class Res(UUIDMixin, TimestampMixin, db.Model):
     __tablename__ = "reses"
@@ -148,6 +170,23 @@ class Thread(UUIDMixin, TimestampMixin, db.Model):
         )
         return last_res.created_at
 
+    def post_res(
+        self,
+        body: str,
+        who_seeds: list[str],
+        anon_name: Optional[str] = None,
+        anon_email: Optional[str] = None,
+    ):
+        new_res = Res(
+            number=self.next_res_number,
+            anon_name=anon_name or None,
+            anon_email=anon_email or None,
+            who=get_b64encoded_digest_string_from_words(*who_seeds),
+            body=body,
+        )
+        self.reses.append(new_res)
+        return new_res
+
 
 class Board(UUIDMixin, TimestampMixin, db.Model):
     __tablename__ = "boards"
@@ -157,6 +196,11 @@ class Board(UUIDMixin, TimestampMixin, db.Model):
         UUID(), db.ForeignKey("board_categories.id"), nullable=False
     )
     threads = db.relationship("Thread", backref="board")
+
+    def post_thread(self, thread_name: str):
+        new_thread = Thread(name=thread_name, board_id=self.id)
+        self.threads.append(new_thread)
+        return new_thread
 
 
 class BoardCategory(UUIDMixin, TimestampMixin, db.Model):

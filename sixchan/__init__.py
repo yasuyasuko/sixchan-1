@@ -14,8 +14,8 @@ from sixchan.config import FLASH_LEVEL, FLASH_MESSAGE, Config
 from sixchan.email import mail, send_email
 from sixchan.filters import authorformat, datetimeformat, uuidshort, whoformat
 from sixchan.forms import AccountForm, LoginForm, ResForm, SignupForm, ThreadForm
-from sixchan.models import ActivationToken, Board, BoardCategory, Res, Thread, User, db
-from sixchan.utils import get_b64encoded_digest_string_from_words, normalize_uuid_string
+from sixchan.models import ActivationToken, Board, BoardCategory, Thread, User, db
+from sixchan.utils import normalize_uuid_string
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -58,18 +58,15 @@ def board(board_id):
 
     form = ThreadForm()
     if form.validate_on_submit():
-        thread = Thread(name=form.thread_name.data, board_id=board_uuid)
+        new_thread = board.post_thread(form.thread_name.data)
         ip = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
         today_utc = datetime.utcnow().strftime("%Y%m%d")
-        res = Res(
-            number=thread.next_res_number,
-            anon_name=form.anon_name.data or None,
-            anon_email=form.anon_email.data or None,
-            who=get_b64encoded_digest_string_from_words(ip, today_utc),
+        new_thread.post_res(
             body=form.body.data,
+            who_seeds=[ip, today_utc],
+            anon_name=form.anon_name.data,
+            anon_email=form.anon_email.data,
         )
-        thread.reses.append(res)
-        db.session.add(thread)
         db.session.commit()
         return redirect(url_for("board", board_id=board_id, _anchor="thread-form"))
 
@@ -86,14 +83,12 @@ def thread(thread_id):
     if form.validate_on_submit():
         ip = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
         today_utc = datetime.utcnow().strftime("%Y%m%d")
-        res = Res(
-            number=thread.next_res_number,
-            anon_name=form.anon_name.data or None,
-            anon_email=form.anon_email.data or None,
-            who=get_b64encoded_digest_string_from_words(ip, today_utc),
+        thread.post_res(
             body=form.body.data,
+            who_seeds=[ip, today_utc],
+            anon_name=form.anon_name.data,
+            anon_email=form.anon_email.data,
         )
-        thread.reses.append(res)
         db.session.commit()
         return redirect(url_for("thread", thread_id=thread_id, _anchor="res-form"))
 
@@ -136,19 +131,17 @@ def signup():
             flash(FLASH_MESSAGE.EMAIL_ALREADY_EXISTS, FLASH_LEVEL.ERROR)
             return render_template("signup.html", form=form)
 
-        user = User(
+        new_user = User.signup(
             username=form.username.data,
-            display_name=form.display_name.data,
             email=form.email.data,
-            activated=False,
+            password=form.password.data,
+            display_name=form.display_name.data,
         )
-        user.password = form.password.data
-        db.session.add(user)
+        token_string = ActivationToken.generate(new_user, timedelta(days=1))
+        print(new_user.id)
         db.session.commit()
-
-        token_string = ActivationToken.generate(user, timedelta(days=1))
         send_email(
-            user.email,
+            new_user.email,
             "6channel ご本人確認",
             "mail/activate",
             activation_link=url_for(
@@ -172,12 +165,12 @@ def activate(token_string):
         # TODO: reissue token?
         return redirect(url_for("index"))
 
-    user = User.query.join(ActivationToken, User.id == ActivationToken.user_id).first()
+    user = User.query.get(token.user_id)
     if user.activated:
         flash(FLASH_MESSAGE.ACTIVATION_ALREADY_DONE, FLASH_LEVEL.INFO)
         return redirect(url_for("login"))
     else:
-        user.activated = True
+        user.activate()
         db.session.commit()
         login_user(user)
         flash(FLASH_MESSAGE.ACTIVATION_COMPLETE, FLASH_LEVEL.SUCCESS)
