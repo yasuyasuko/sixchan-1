@@ -2,12 +2,13 @@ import json
 import secrets
 import uuid
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Any, Optional, Text
 
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID as PostgreUUID
-from sqlalchemy.types import CHAR, TypeDecorator
+from sqlalchemy.engine import Dialect
+from sqlalchemy.types import CHAR, TypeDecorator, TypeEngine
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from sixchan.config import (
@@ -28,24 +29,28 @@ class UUID(TypeDecorator):
     impl = CHAR
     cache_ok = True
 
-    def load_dialect_impl(self, dialect):
+    def load_dialect_impl(self, dialect: Dialect) -> TypeEngine[Any]:
         if dialect.name == "postgresql":
             return dialect.type_descriptor(PostgreUUID())
         else:
             return dialect.type_descriptor(CHAR(32))
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[Text]:
         if value is None:
             return value
         elif dialect.name == "postgresql":
             return str(value)
         else:
             if not isinstance(value, uuid.UUID):
-                return "%.32x" % uuid.UUID(value).int
+                return uuid.UUID(value).hex
             else:
-                return "%.32x" % value.int
+                return f"{value.int:032x}"
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(
+        self, value: Optional[Any], dialect: Dialect
+    ) -> Optional[Any]:
         if value is None:
             return value
         else:
@@ -253,7 +258,7 @@ def insert_mockdata():
                 created_at=created_at,
                 updated_at=updated_at,
                 password_hash=password_hash,
-                **user
+                **user,
             )
         )
 

@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import datetime, timezone
 
@@ -6,7 +7,7 @@ import shortuuid
 from markupsafe import Markup, escape
 
 
-def authorformat(author, email):
+def authorformat(author: Optional[str], email: Optional[str]) -> Markup:
     if not author:
         author = "null"
     else:
@@ -20,16 +21,17 @@ def authorformat(author, email):
     return Markup(html)
 
 
-def datetimeformat(dt: datetime):
+def datetimeformat(dt: datetime) -> Markup:
     if not dt.tzinfo:
         dt = dt.replace(tzinfo=timezone.utc)
     dt_jp = dt.astimezone(pytz.timezone("Asia/Tokyo"))
     msec = int(dt_jp.microsecond / 1000)
-    html = f'{dt_jp.strftime("%Y/%m/%d(%a) %H:%M:%S")}<span class="text-xs text-gray-300">.{msec:03}</span>'
+    dt_formatted = dt_jp.strftime("%Y/%m/%d(%a) %H:%M:%S")
+    html = f'{dt_formatted}<span class="text-xs text-gray-300">.{msec:03}</span>'
     return Markup(html)
 
 
-def whoformat(who):
+def whoformat(who: str) -> Markup:
     return Markup(f"<span title={who}>{who[:10]}</span>")
 
 

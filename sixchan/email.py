@@ -6,12 +6,12 @@ from flask_mail import Mail, Message
 mail = Mail()
 
 
-def send_async_email(app, msg):
+def send_async_email(app, msg: Message) -> None:
     with app.app_context():
         mail.send(msg)
 
 
-def send_email(to, subject, template, **kwargs):
+def send_email(to: str, subject: str, template: str, **kwargs) -> Thread:
     app = current_app._get_current_object()
     msg = Message(subject, sender=app.config["MAIL_USERNAME"], recipients=[to])
     msg.body = render_template(template + ".txt", **kwargs)

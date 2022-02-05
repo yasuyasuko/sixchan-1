@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Optional
 
 from flask import Flask, abort, flash, redirect, render_template, request, url_for
 from flask_login import (
@@ -34,7 +35,7 @@ app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
 
 
 @login_manager.user_loader
-def load_user(username: str):
+def load_user(username: str) -> Optional[User]:
     return User.query.filter_by(username=username).first()
 
 
@@ -57,7 +58,7 @@ def index():
 
 
 @app.route("/boards/<board_id>", methods=["GET", "POST"])
-def board(board_id):
+def board(board_id: str):
     try:
         board_uuid = normalize_uuid_string(board_id)
     except ValueError:
@@ -84,7 +85,7 @@ def board(board_id):
 
 
 @app.route("/threads/<thread_id>", methods=["GET", "POST"])
-def thread(thread_id):
+def thread(thread_id: str):
     try:
         thread_uuid = normalize_uuid_string(thread_id)
     except ValueError:
@@ -167,7 +168,7 @@ def signup():
 
 
 @app.get("/activate/<token_string>")
-def activate(token_string):
+def activate(token_string: str):
     token = ActivationToken.query.get(token_string)
     if not token:
         flash(FLASH_MESSAGE.ACTIVATION_TOKEN_INVALID, FLASH_LEVEL.ERROR)
