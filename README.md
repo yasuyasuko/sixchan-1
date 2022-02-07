@@ -3,6 +3,7 @@ Youtubeで投稿している"【Python】Flaskでつくる5ちゃんねる風掲
 - Part1: https://youtu.be/DkOZSxaMV8w
 - Part2: https://youtu.be/BO0O8FcQQ6M
 - Part3: https://youtu.be/_Jyis3245Ys
+- Part4: https://youtu.be/yyR-9ARFwWA
 
 ## Quickstart
 以下でリポジトリをクローンして、開発サーバを立ち上げることができます。
