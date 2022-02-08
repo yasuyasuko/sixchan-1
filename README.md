@@ -8,7 +8,7 @@ Youtubeで投稿している"【Python】Flaskでつくる5ちゃんねる風掲
 ## Quickstart
 以下でリポジトリをクローンして、開発サーバを立ち上げることができます。
 ```bash
-git clone https://github.com/suwa808/sixchan.git
+git clone -b youtube-part4 https://github.com/suwa808/sixchan.git
 cd sixchan
 python3 -m venv .venv
 pip3 install -r requirements.txt
