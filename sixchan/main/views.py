@@ -63,6 +63,7 @@ def thread(thread_id: str):
         abort(404)
 
     thread = Thread.query.get_or_404(thread_uuid)
+    reses = queries.get_reses(thread_id)
 
     form = OnymousResForm() if current_user.is_authenticated else AnonymousResForm()
     if form.validate_on_submit():
@@ -79,6 +80,7 @@ def thread(thread_id: str):
 
     context = {
         "thread": thread,
+        "reses": reses,
         "form": form,
         "anchor": "res-form" if form.is_submitted() else None,
     }
