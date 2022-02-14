@@ -124,6 +124,7 @@ class UserAccount(UUIDMixin, TimestampMixin, UserMixin, db.Model):
     email = db.Column(db.String(EMAIL_MAX_LENGTH), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     activated = db.Column(db.Boolean, default=False, nullable=False)
+    profile = db.relationship("UserProfile", uselist=False)
 
     def get_id(self):
         """flask-login requires this method to identify users"""
