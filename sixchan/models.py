@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from typing import Any, Optional, Text, Union
 
 from flask_login import AnonymousUserMixin, UserMixin
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID as PostgreUUID
 from sqlalchemy.engine import Dialect
 from sqlalchemy.types import CHAR, TypeDecorator, TypeEngine
@@ -20,9 +19,8 @@ from sixchan.config import (
     THREAD_NAME_MAX_LENGTH,
     USERNAME_MAX_LENGTH,
 )
+from sixchan.extensions import db
 from sixchan.utils import get_b64encoded_digest_string_from_words
-
-db = SQLAlchemy()
 
 
 class UUID(TypeDecorator):

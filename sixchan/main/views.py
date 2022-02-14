@@ -5,6 +5,7 @@ from flask_login import current_user
 from sqlalchemy.orm import joinedload
 
 from sixchan.config import THREADS_PER_PAGE
+from sixchan.extensions import db
 from sixchan.main import queries
 from sixchan.main.forms import (
     AnonymousResForm,
@@ -13,7 +14,7 @@ from sixchan.main.forms import (
     OnymousThreadForm,
 )
 from sixchan.main.utils import normalize_uuid_string
-from sixchan.models import AnonymousUser, Board, BoardCategory, Thread, db
+from sixchan.models import AnonymousUser, Board, BoardCategory, Thread
 
 main = Blueprint("main", __name__)
 

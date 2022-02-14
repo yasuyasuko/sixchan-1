@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask.cli import with_appcontext
 
-from sixchan.models import db
+from sixchan.extensions import db
 
 database = Blueprint("database", __name__)
 

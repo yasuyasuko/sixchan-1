@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 from flask import Blueprint
 
-from sixchan.models import db
+from sixchan.extensions import db
 
 MOCKS_DIR = Path(__file__).parent / "mocks"
 dev = Blueprint("dev", __name__)

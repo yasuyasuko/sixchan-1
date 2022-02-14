@@ -4,9 +4,10 @@ from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import login_user, logout_user
 
 from sixchan.config import FLASH_LEVEL, FLASH_MESSAGE
+from sixchan.extensions import db
 from sixchan.email import send_email
 from sixchan.forms import LoginForm, SignupForm
-from sixchan.models import ActivationToken, UserAccount, db
+from sixchan.models import ActivationToken, UserAccount
 
 auth = Blueprint("auth", __name__, url_prefix="me")
 

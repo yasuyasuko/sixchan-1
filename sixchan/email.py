@@ -1,9 +1,9 @@
 from threading import Thread
 
 from flask import current_app, render_template
-from flask_mail import Mail, Message
+from flask_mail import Message
 
-mail = Mail()
+from sixchan.extensions import mail
 
 
 def send_async_email(app, msg: Message) -> None:

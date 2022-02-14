@@ -1,76 +1,120 @@
 from typing import Optional
 
-from flask import Flask, flash, redirect, render_template, url_for
-from flask_login import (
-    LoginManager,
-    current_user,
-    login_required,
-)
-from flask_wtf.csrf import CSRFProtect
+from flask import Flask, render_template
 
 from sixchan.config import FLASH_LEVEL, FLASH_MESSAGE, Config
-from sixchan.email import mail
-from sixchan.filters import authorformat, datetimeformat, uuidshort, whoformat
-from sixchan.forms import AccountForm
-from sixchan.models import (
-    AnonymousUser,
-    UserAccount,
-    db,
-)
-from sixchan.cli.database import database
-from sixchan.cli.dev import dev
-from sixchan.utils import paginate
-
-app = Flask(__name__)
-app.config.from_object(Config)
-csrf = CSRFProtect(app)
-db.init_app(app)
-mail.init_app(app)
-login_manager = LoginManager(app)
-login_manager.login_view = "login"
-login_manager.login_message = FLASH_MESSAGE.LOGIN_REQUIRED
-login_manager.login_message_category = FLASH_LEVEL.ERROR
-login_manager.anonymous_user = AnonymousUser
-app.add_template_filter(datetimeformat)
-app.add_template_filter(authorformat)
-app.add_template_filter(whoformat)
-app.add_template_filter(uuidshort)
-app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
-app.jinja_env.globals["paginate"] = paginate
-app.register_blueprint(database)
-app.register_blueprint(dev)
+from sixchan.extensions import csrf, db, login_manager, mail
+from sixchan.models import AnonymousUser, UserAccount
 
 
-@login_manager.user_loader
-def load_user(username: str) -> Optional[UserAccount]:
-    return UserAccount.query.filter_by(username=username).first()
+def _debug_mode(app):
+    import logging
+    import sys
+    import re
+    from datetime import datetime
 
+    import sqlparse
 
-if app.config["DEBUG"]:
+    class PrettySQLFormatter(logging.Formatter):
+        """For hooking 'sqlalchemy.engine.Engine' logger.
+        SQLAlchemy's logs are hard to read, so we will format logs with sqlparse and
+        color. We didn't check the detailed specification of sqlalchemy, so I'm not sure
+        how it will behave.
+        """
 
+        UPPER_WORD_REGEX = re.compile(r"([A-Z]+)")
+
+        def _color_keyword(self, sql):
+            # green highlight
+            return self.UPPER_WORD_REGEX.sub("\033[32m\\1\033[0m", sql)
+
+        def format(self, record):
+            org: str = record.getMessage().replace("\n", "")
+            if org.startswith("["):
+                return org
+            else:
+                formatted = sqlparse.format(org, reindent=True, keyword_case="upper")
+                colored = self._color_keyword(formatted)
+                dt = str(datetime.fromtimestamp(record.created))[:-7]
+                # cyan highlight
+                head = f"\033[36m{dt} {record.name} {record.levelname}\033[0m"
+                return f"{head}\n{colored}"
+
+    # hook 'sqlalchemy.engine.Engine' logger
+    sa_logger = logging.getLogger("sqlalchemy.engine.Engine")
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(PrettySQLFormatter())
+    sa_logger.addHandler(handler)
+
+    # limited endpoint on debug
     @app.get("/debug")
     def debug():
         return "this is a page for debug"
 
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template("404.html"), 404
+def create_app():
+    # setup flask app
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template("error/404.html"), 404
+
+    if app.config["DEBUG"]:
+        _debug_mode(app)
+
+    # setup extensions
+    csrf.init_app(app)
+    db.init_app(app)
+    mail.init_app(app)
+    login_manager.init_app(app)
+    login_manager.login_view = "auth.login"
+    login_manager.login_message = FLASH_MESSAGE.LOGIN_REQUIRED
+    login_manager.login_message_category = FLASH_LEVEL.ERROR
+    login_manager.anonymous_user = AnonymousUser
+
+    @login_manager.user_loader
+    def load_user(username: str) -> Optional[UserAccount]:
+        return UserAccount.query.filter_by(username=username).first()
+
+    # setup jinja2
+    from sixchan.filters import ago_from_now_format, datetimeformat, uuidshort
+    from sixchan.utils import paginate
+
+    app.add_template_filter(datetimeformat)
+    app.add_template_filter(uuidshort)
+    app.add_template_filter(ago_from_now_format)
+    app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
+    app.jinja_env.globals["paginate"] = paginate
+
+    # setup blueprints
+    from sixchan.auth.views import auth
+    from sixchan.cli.database import database
+    from sixchan.cli.dev import dev
+    from sixchan.main.views import main
+
+    app.register_blueprint(auth)
+    app.register_blueprint(main)
+    app.register_blueprint(dev)
+    app.register_blueprint(database)
+
+    return app
 
 
-@app.route("/account", methods=["GET", "POST"])
-@login_required
-def account():
-    form = AccountForm()
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.display_name = form.display_name.data
-        db.session.commit()
-        flash(FLASH_MESSAGE.USER_INFO_UPDATE, FLASH_LEVEL.SUCCESS)
-        return redirect(url_for("account"))
+# @app.route("/account", methods=["GET", "POST"])
+# @login_required
+# def account():
+#     form = AccountForm()
+#     if form.validate_on_submit():
+#         current_user.username = form.username.data
+#         current_user.display_name = form.display_name.data
+#         db.session.commit()
+#         flash(FLASH_MESSAGE.USER_INFO_UPDATE, FLASH_LEVEL.SUCCESS)
+#         return redirect(url_for("account"))
 
-    if not form.is_submitted():
-        form.username.data = current_user.username
-        form.display_name.data = current_user.display_name
+#     if not form.is_submitted():
+#         form.username.data = current_user.username
+#         form.display_name.data = current_user.display_name
 
-    return render_template("account.html", form=form)
+#     return render_template("account.html", form=form)
