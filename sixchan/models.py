@@ -1,9 +1,8 @@
-from ctypes import Union
 import json
 import secrets
 import uuid
 from datetime import datetime, timedelta
-from typing import Any, Optional, Text
+from typing import Any, Optional, Text, Union
 
 from flask_login import AnonymousUserMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -80,7 +79,7 @@ class ExpirableTokenMixin:
         return self.expires_at < datetime.utcnow()
 
 
-class ActivationToken(db.Model):
+class ActivationToken(ExpirableTokenMixin, db.Model):
     __tablename__ = "activation_tokens"
     account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=False)
 
@@ -93,7 +92,7 @@ class ActivationToken(db.Model):
         return token
 
 
-class ChangeEmailConfiramtionToken(db.Model):
+class ChangeEmailConfiramtionToken(ExpirableTokenMixin, db.Model):
     __tablename__ = "change_email_confirmation_tokens"
     account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=False)
     new_email = db.Column(db.String(128), nullable=False)
