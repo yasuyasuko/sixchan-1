@@ -89,15 +89,14 @@ class ActivationToken(db.Model):
         return self.expires_at < datetime.utcnow()
 
 
-class User(UUIDMixin, TimestampMixin, UserMixin, db.Model):
-    __tablename__ = "users"
-    username = db.Column(db.String(USERNAME_MAX_LENGTH), unique=True, nullable=False)
-    display_name = db.Column(db.String(DISPLAY_NAME_MAX_LENGTH), nullable=True)
-    email = db.Column(db.String(EMAIL_MAX_LENGTH), unique=True, nullable=True)
+class UserAccount(UUIDMixin, TimestampMixin, UserMixin, db.Model):
+    __tablename__ = "user_accounts"
+    username = db.Column(
+        db.String(USERNAME_MAX_LENGTH), unique=True, nullable=False, index=True
+    )
+    email = db.Column(db.String(EMAIL_MAX_LENGTH), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     activated = db.Column(db.Boolean, default=False, nullable=False)
-    introduction = db.Column(db.Text, nullable=True)
-    reses = db.relationship("Res", backref="author")
 
     def get_id(self):
         """flask-login requires this method to identify users"""
@@ -126,19 +125,28 @@ class User(UUIDMixin, TimestampMixin, UserMixin, db.Model):
         password: str,
         display_name: Optional[str] = None,
     ):
-        new_user = cls(
+        new_account = cls(
             username=username,
             display_name=display_name or username,
             email=email,
             activated=False,
         )
-        new_user.password = password
-        db.session.add(new_user)
+        new_account.password = password
+        new_account.profile = UserProfile(display_name=display_name or username)
+        db.session.add(new_account)
         db.session.flush()
-        return new_user
+        return new_account
 
     def activate(self):
         self.activated = True
+
+
+class UserProfile(TimestampMixin, db.Model):
+    __tablename__ = "user_profiles"
+    account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), primary_key=True)
+    display_name = db.Column(db.String(DISPLAY_NAME_MAX_LENGTH), nullable=True)
+    introduction = db.Column(db.Text, nullable=True)
+    reses = db.relationship("Res", backref="author")
 
 
 class Res(UUIDMixin, TimestampMixin, db.Model):
@@ -253,7 +261,7 @@ def insert_mockdata():
         updated_at = datetime.fromisoformat(user.pop("updated_at"))
         password_hash = generate_password_hash(user.pop("password"))
         db.session.add(
-            User(
+            UserAccount(
                 id=id,
                 created_at=created_at,
                 updated_at=updated_at,
