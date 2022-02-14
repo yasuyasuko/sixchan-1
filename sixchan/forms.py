@@ -1,12 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, StringField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, Regexp
+from wtforms import StringField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 
 from sixchan.config import (
     ANON_NAME_MAX_LENGTH,
     BODY_MAX_LENGTH,
     DISPLAY_NAME_MAX_LENGTH,
-    PASSWORD_REGEX,
     THREAD_NAME_MAX_LENGTH,
     USERNAME_MAX_LENGTH,
     USERNAME_REGEX,
