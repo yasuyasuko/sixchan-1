@@ -1,15 +1,43 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import NamedTuple, Optional
+from uuid import UUID
+
+from sqlalchemy import func
 
 from sixchan.models import (
-    UUID,
     AnonymousAuthor,
     OnymousAuthor,
     Res,
+    Thread,
     UserAccount,
     UserProfile,
 )
+from sixchan.queries import PaginationQueryModel
+
+
+class ThreadOverviewRow(NamedTuple):
+    id: UUID
+    name: str
+    reses_count: int
+    last_created_at: datetime
+
+
+@dataclass
+class ThreadOverviewQueryModel:
+    id: UUID
+    name: str
+    reses_count: int
+    last_posted_at: datetime
+
+    @classmethod
+    def from_row(cls, row: ThreadOverviewRow) -> "ThreadOverviewQueryModel":
+        return cls(
+            id=row.id,
+            name=row.name,
+            reses_count=row.reses_count,
+            last_posted_at=row.last_created_at,
+        )
 
 
 class ResRow(NamedTuple):
@@ -36,10 +64,10 @@ class ResQueryModel:
 
     @classmethod
     def from_row(cls, row: ResRow) -> "ResQueryModel":
-        is_anonymous = bool(row.username)
+        is_anonymous = not bool(row.username)
         return cls(
             number=row.number,
-            who=row.number,
+            who=row.who,
             body=row.body,
             posted_at=row.created_at,
             is_anonymous=is_anonymous,
@@ -54,6 +82,51 @@ class UserQueryModel:
     username: str
     display_name: str
     introduction: str
+
+
+def get_threads_pagination(board_id: UUID, page: int, per_page: int):
+    if page < 1 or not isinstance(page, int):
+        raise ValueError(
+            f"page must be integer greater than or equal to 1, page:{page}"
+        )
+    if per_page < 1 or not isinstance(per_page, int):
+        raise ValueError(
+            f"per_page must be integer greater than or equal to 1, per_page:{per_page}"
+        )
+
+    total = Thread.query.filter_by(board_id=board_id).count()
+    if total <= 0:
+        return PaginationQueryModel(1, 1, [])
+
+    pages = total // per_page + 1
+    limit = per_page
+    offset = per_page * (page - 1)
+
+    subquery = (
+        Res.query.with_entities(
+            Res.thread_id,
+            func.count(Res.id).label("reses_count"),
+            func.max(Res.created_at).label("last_created_at"),
+        )
+        .group_by(Res.thread_id)
+        .subquery("reses")
+    )
+    query = (
+        Thread.query.with_entities(
+            Thread.id,
+            Thread.name,
+            subquery.c.reses_count,
+            subquery.c.last_created_at,
+        )
+        .filter_by(board_id=board_id)
+        .join(subquery, Thread.id == subquery.c.thread_id)
+        .order_by(subquery.c.last_created_at.desc())
+        .limit(limit)
+        .offset(offset)
+    )
+
+    items = [ThreadOverviewQueryModel.from_row(row) for row in query.all()]
+    return PaginationQueryModel(page, pages, items)
 
 
 def get_reses(thread_id: UUID) -> list[ResQueryModel]:
@@ -72,7 +145,7 @@ def get_reses(thread_id: UUID) -> list[ResQueryModel]:
         .outerjoin(AnonymousAuthor)
         .outerjoin(OnymousAuthor)
         .outerjoin(UserAccount, OnymousAuthor.author_id == UserAccount.id)
-        .outerjoin(AnonymousAuthor)
+        .outerjoin(UserProfile)
     )
 
     reses = [ResQueryModel.from_row(row) for row in query.all()]

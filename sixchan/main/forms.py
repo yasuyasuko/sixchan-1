@@ -2,11 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, Optional
 
-from sixchan.config import (
-    ANON_NAME_MAX_LENGTH,
-    BODY_MAX_LENGTH,
-    THREAD_NAME_MAX_LENGTH,
-)
+from sixchan.config import ANON_NAME_MAX_LENGTH, BODY_MAX_LENGTH, THREAD_NAME_MAX_LENGTH
 
 
 class AnonymousResForm(FlaskForm):

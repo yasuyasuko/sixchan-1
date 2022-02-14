@@ -2,7 +2,9 @@ from datetime import datetime
 
 from flask import Blueprint, abort, redirect, render_template, request, url_for
 from flask_login import current_user
+from sqlalchemy.orm import joinedload
 
+from sixchan.config import THREADS_PER_PAGE
 from sixchan.main import queries
 from sixchan.main.forms import (
     AnonymousResForm,
@@ -10,16 +12,18 @@ from sixchan.main.forms import (
     OnymousResForm,
     OnymousThreadForm,
 )
+from sixchan.main.utils import normalize_uuid_string
 from sixchan.models import AnonymousUser, Board, BoardCategory, Thread, db
-from sixchan.utils import normalize_uuid_string
 
 main = Blueprint("main", __name__)
 
 
 @main.get("/")
 def index():
-    board_categories = BoardCategory.query.all()
-    return render_template("index.html", board_categories=board_categories)
+    board_categories = BoardCategory.query.options(
+        joinedload(BoardCategory.boards)
+    ).all()
+    return render_template("main/index.html", board_categories=board_categories)
 
 
 @main.route("/boards/<board_id>", methods=["GET", "POST"])
@@ -30,6 +34,10 @@ def board(board_id: str):
         abort(404)
 
     board = Board.query.get_or_404(board_uuid)
+    page = request.args.get("page", default=1, type=int)
+    pagination = queries.get_threads_pagination(
+        board_id=board_uuid, page=page, per_page=THREADS_PER_PAGE
+    )
 
     form = (
         OnymousThreadForm() if current_user.is_authenticated else AnonymousThreadForm()
@@ -49,6 +57,7 @@ def board(board_id: str):
 
     context = {
         "board": board,
+        "pagination": pagination,
         "form": form,
         "anchor": "thread-form" if form.is_submitted() else None,
     }
@@ -63,7 +72,7 @@ def thread(thread_id: str):
         abort(404)
 
     thread = Thread.query.get_or_404(thread_uuid)
-    reses = queries.get_reses(thread_id)
+    reses = queries.get_reses(thread.id)
 
     form = OnymousResForm() if current_user.is_authenticated else AnonymousResForm()
     if form.validate_on_submit():
