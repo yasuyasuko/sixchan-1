@@ -24,6 +24,9 @@ lint:
 format:
 	black .
 
+isort:
+	isort -sl .
+
 .PHONY: dev up down
 .PHONY: createtables droptables insertmocks resetdb
-.PHONY: lint format
+.PHONY: lint format isort
