@@ -1,0 +1,162 @@
+<!--
+Pagination
+    page: current page number.
+    pages: total pages number.
+    endpoint: the endpoint of the URL (name of the function).
+    **kwargs: pass to url_for after endpoint.
+ -->
+{% macro Pagination(page, pages, endpoint) %}
+{% with pegination, (prev_active, next_active) = paginate(page, pages, with_edge_conidtion=True)%}
+{% set base = "p-2 mx-1 font-bold" %}
+{% set normal = base + " p-2 mx-1 font-bold hover:text-blue-500" %}
+{% set dot = base %}
+{% set active = base + " text-blue-500 rounded-full" %}
+{% set inactive = base + " text-gray-300" %}
+<ul class="flex">
+    {% if prev_active %}
+    <a href="{{ url_for(endpoint, page=page-1, **kwargs) }}" class="{{ normal }}">前へ</a>
+    {% else %}
+    <p class="{{ inactive }}">前へ</p>
+    {% endif %}
+
+    {% for n in pegination %}
+    {% if n == "dot" %}
+    <p class="{{ dot }}">...</p>
+    {% else %}
+    {% if n == page %}
+    <a href="{{ url_for(endpoint, page=n, **kwargs) }}" class="{{ active }}">{{ n }}</a>
+    {% else %}
+    <a href="{{ url_for(endpoint, page=n, **kwargs) }}" class="{{ normal }}">{{ n }}</a>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+    {% if next_active %}
+    <a href="{{ url_for(endpoint, page=page+1, **kwargs) }}" class="{{ normal }}">次へ</a>
+    {% else %}
+    <p class="{{ inactive }}">次へ</p>
+    {% endif %}
+</ul>
+{% endwith %}
+{% endmacro %}
+
+<!--
+ ErrorMessages
+     field: any wtforms fields.
+ -->
+{% macro ErrorMessages(field) %}
+<ul>
+    {% for error in field.errors %}
+    <li class="text-red-500">{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endmacro %}
+
+<!--
+ TextField
+     field: wtforms StringField or PasswordField.
+ -->
+{% macro TextField(field) %}
+<div class="flex flex-col mt-1">
+    {{ field.label(class="font-semibold") }}
+    {{ field(class="p-1 mt-1 bg-white border border-gray-300 rounded focus:outline-none focus:border-blue-700") }}
+    {{ ErrorMessages(field) }}
+</div>
+{% endmacro %}
+
+<!--
+ TextAreaField
+     field: wtforms TextAreaField.
+ -->
+{% macro TextAreaField(field) %}
+<div class="flex flex-col mt-1">
+    {{ field.label(class="font-semibold") }}
+    {{ field(class="h-40 p-1 mt-1 bg-white border border-gray-300 rounded focus:outline-none focus:border-blue-700") }}
+    {{ ErrorMessages(field) }}
+</div>
+{% endmacro %}
+
+<!--
+ CheckboxField
+     field: wtforms BooleanField.
+ -->
+{% macro CheckboxField(field) %}
+<div class="mx-1 mt-1">
+    {{ field }}
+    {{ field.label }}
+</div>
+{% endmacro %}
+
+<!--
+ SubmitButton
+     label: button text.
+     form: target form id.
+ -->
+{% macro SubmitButton(label, form) %}
+<button type="submit" form="{{ form }}" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-dark">
+    {{ label }}
+</button>
+{% endmacro %}
+
+<!--
+ TextLines
+     raw: text.
+ -->
+{% macro TextLines(raw) %}
+<p>
+    {% for line in raw.split("\n") %}
+    {{ line }}<br>
+    {% endfor %}
+</p>
+{% endmacro %}
+
+<!--
+ Timeago
+     dt: datetime.
+  -->
+{% macro Timeago(dt) %}
+<span title="{{ dt | datetimeformat }}" class="text-sm text-gray-400">
+    {{ dt | ago_from_now_format }}
+</span>
+{% endmacro %}
+
+<!--
+ WhoShort
+     who: 22chars
+  -->
+{% macro WhoShort(who) %}
+<span title="{{ who }}" class="text-sm text-gray-400">
+    ID:{{ who | truncate(13) }}
+</span>
+{% endmacro %}
+
+<!--
+ AnonymousName
+     name: str
+     email: str
+  -->
+{% macro AnonymousName(name, email) %}
+<span class="text-green-500">
+    <span class="text-gray-600">名前: </span>
+    {% if email %}
+    <a href="mailto:{{ email }}" class="hover:text-green-400">
+        {{ name }}
+    </a>
+    {% else %}
+    {{ name }}
+    {% endif %}
+</span>
+{% endmacro %}
+
+<!--
+ OnymousName
+     username: str
+     display_name: str
+  -->
+{% macro OnymousName(username, display_name) %}
+<span class="text-blue-500">
+    <a href="{{url_for('main.user', username=username)}}" class="hover:text-blue-400">
+        <span class="text-gray-600">名前: </span>{{ display_name }}
+    </a>
+</span>
+{% endmacro %}

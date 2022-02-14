@@ -1,12 +1,19 @@
 {% extends "_base.html" %}
-{% from "_macro.html" import render_text_field, render_textarea_field, render_submit_button %}
+{% from "_component.html" import AnonymousName %}
+{% from "_component.html" import OnymousName %}
+{% from "_component.html" import Timeago %}
+{% from "_component.html" import WhoShort %}
+{% from "_component.html" import TextLines %}
+{% from "_component.html" import TextField %}
+{% from "_component.html" import TextAreaField %}
+{% from "_component.html" import SubmitButton %}
 {% block title %}{{ thread.name }}{% endblock %}
 {% block content %}
 <!-- ThreadTittle -->
 <div>
     <div class="flex">
         <div class="p-2 bg-blue-500 rounded-lg">
-            <span class="font-medium text-white"> {{ thread.reses_count }} </span>
+            <span class="font-medium text-white"> {{ reses | length }} </span>
             <span class="font-bold text-gray-100">Responses</span>
         </div>
     </div>
@@ -14,26 +21,34 @@
 </div>
 <!-- Reses -->
 <div>
-    {% for res in thread.reses %}
+    {% for res in reses %}
     <div class="p-2 mt-2 bg-white rounded-lg">
         <p class="font-medium">
-            {{ res.number }} 名前:{{ res.anon_name | authorformat(res.anon_email) }}
-            {{ res.created_at | datetimeformat }} ID:{{ res.who | whoformat }}
+            {{ res.number }}
+            {% if res.is_anonymous %}
+            {{ AnonymousName(res.name, res.email) }}
+            {% else %}
+            {{ OnymousName(res.username, res.name)}}
+            {% endif %}
+            {{ Timeago(res.posted_at) }}
+            {{ WhoShort(res.who) }}
         </p>
-        <p>{{res.body}}</p>
+        {{ TextLines(res.body) }}
     </div>
     {% endfor %}
 </div>
 <!-- Form -->
-<div>
+<div class="mt-4">
     <p class="text-lg font-bold">レスを投稿する</p>
     <form action="" , method="POST" id="res-form">
         {{ form.csrf_token }}
-        {{ render_text_field(form.anon_name)}}
-        {{ render_text_field(form.anon_email)}}
-        {{ render_textarea_field(form.body)}}
-        <div class="flex items-center justify-center w-full mt-2">
-            {{ render_submit_button("書き込む", "res-form") }}
+        {% if not current_user.is_authenticated %}
+        {{ TextField(form.anon_name)}}
+        {{ TextField(form.anon_email)}}
+        {% endif %}
+        {{ TextAreaField(form.body)}}
+        <div class="mt-2 text-center">
+            {{ SubmitButton("書き込む", "res-form") }}
         </div>
     </form>
 </div>

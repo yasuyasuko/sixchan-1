@@ -1,5 +1,8 @@
 {% extends "_base.html" %}
-{% from "_macro.html" import render_text_field, render_textarea_field, render_submit_button %}
+{% from "_component.html" import Pagination %}
+{% from "_component.html" import TextField %}
+{% from "_component.html" import TextAreaField %}
+{% from "_component.html" import SubmitButton %}
 {% block title %}{{ board.name }}{% endblock %}
 {% block content %}
 <div>
@@ -7,28 +10,40 @@
     <p>{{board.description}}</p>
 </div>
 <div class="mt-4 bg-white rounded-lg">
-    <div class="p-2 text-lg font-bold text-white bg-blue-500 rounded-t-lg">スレッド一覧</div>
+    <div class="p-2 text-lg font-bold text-white bg-blue-500 rounded-t-lg">
+        スレッド一覧 <span class="text-sm">(最後の投稿が新しい順)</span>
+    </div>
     <div class="p-2">
-        {% for thread in board.threads %}
+        {% if not pagination.items%}
+        <p class="my-4 text-xl text-center">この板にはまだスレッドがありません</p>
+        {% endif %}
+        {% for thread in pagination.items %}
         <div>
-            <a class="font-semibold text-blue-500" href="{{ url_for('thread', thread_id=thread.id | uuidshort) }}">
+            <a class="font-semibold text-blue-500" href="{{ url_for('main.thread', thread_id=thread.id | uuidshort) }}">
                 {{ thread.name }}({{ thread.reses_count }})
             </a>
-            <span class="text-sm">...最後の投稿: {{ thread.last_posted_at | datetimeformat }}</span>
+            <span class="text-sm text-gray-500">
+                {{ thread.last_posted_at | ago_from_now_format }}に最後の投稿
+            </span>
         </div>
         {% endfor %}
     </div>
+    <div class="border"></div>
+    <div class="flex justify-center p-1">
+        {{ Pagination(pagination.page, pagination.pages, 'main.board', board_id=board.id | uuidshort) }}
+    </div>
 </div>
-<div class="my-2 border"></div>
-<div>
+<div class="mt-4">
     <form action="" method="POST" id="thread-form">
         {{ form.csrf_token }}
-        {{ render_text_field(form.thread_name) }}
-        {{ render_text_field(form.anon_name) }}
-        {{ render_text_field(form.anon_email) }}
-        {{ render_textarea_field(form.body) }}
+        {{ TextField(form.thread_name) }}
+        {% if not current_user.is_authenticated %}
+        {{ TextField(form.anon_name) }}
+        {{ TextField(form.anon_email) }}
+        {% endif %}
+        {{ TextAreaField(form.body) }}
         <div class="flex items-center justify-center w-full mt-4">
-            {{ render_submit_button("スレッドを立てる", "thread-form") }}
+            {{ SubmitButton("スレッドを立てる", "thread-form") }}
         </div>
     </form>
 </div>

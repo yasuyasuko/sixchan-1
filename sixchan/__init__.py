@@ -19,6 +19,7 @@ from sixchan.models import (
 )
 from sixchan.cli.database import database
 from sixchan.cli.dev import dev
+from sixchan.utils import paginate
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -35,6 +36,7 @@ app.add_template_filter(authorformat)
 app.add_template_filter(whoformat)
 app.add_template_filter(uuidshort)
 app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
+app.jinja_env.globals["paginate"] = paginate
 app.register_blueprint(database)
 app.register_blueprint(dev)
 
