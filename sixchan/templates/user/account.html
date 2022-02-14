@@ -15,8 +15,8 @@
                     表示名や自己紹介はプロフィールから編集できます。
                 </p>
                 <form action="" method="POST" id="account-form">
-                    {{ account_form.csrf_token }}
-                    {{ TextField(account_form.username)}}
+                    {{ change_username_form.csrf_token }}
+                    {{ TextField(change_username_form.username)}}
                     <div class="mt-2 text-center">
                         {{ SubmitButton("変更", "account-form") }}
                     </div>
