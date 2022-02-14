@@ -25,7 +25,8 @@ from sixchan.models import (
     db,
 )
 from sixchan.utils import normalize_uuid_string
-from sixchan.cli import database
+from sixchan.cli.database import database
+from sixchan.cli.dev import dev
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -43,6 +44,7 @@ app.add_template_filter(whoformat)
 app.add_template_filter(uuidshort)
 app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
 app.register_blueprint(database)
+app.register_blueprint(dev)
 
 
 @login_manager.user_loader

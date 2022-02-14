@@ -8,13 +8,13 @@ down:
 	docker compose down
 
 createtables:
-	python3 -c "from sixchan import app, db; db.create_all(app=app)"
+	FLASK_APP=sixchan FLASK_ENV=development flask database create_tables
 
 droptables:
-	python3 -c "from sixchan import app, db; db.drop_all(app=app)"
+	FLASK_APP=sixchan FLASK_ENV=development flask database drop_tables
 
 insertmocks:
-	python3 -c "from sixchan import app; from sixchan.models import insert_mockdata; app.app_context().push(); insert_mockdata();"
+	FLASK_APP=sixchan FLASK_ENV=development flask dev insert_mockdata
 
 resetdb: droptables createtables insertmocks
 
@@ -24,4 +24,6 @@ lint:
 format:
 	black .
 
-.PHONY: dev up down createtables droptables insertmocks resetdb lint format
+.PHONY: dev up down
+.PHONY: createtables droptables insertmocks resetdb
+.PHONY: lint format

@@ -1,0 +1,17 @@
+class: UserProfile
+depends:
+  - UserAccount
+defaults: &defaults
+  created_at: 2022-01-01 00:00:00.000
+  updated_at: 2022-01-01 00:00:00.000
+records:
+  - account_id: !!python/object/apply:uuid.UUID
+    - 75736572-4000-0000-a000-000000000001
+    display_name: Gregor Samsa
+    introduction: Hello, I'm Gregor Samsa!
+    <<: *defaults
+  - account_id: !!python/object/apply:uuid.UUID
+    - 75736572-4000-0000-a000-000000000002
+    display_name: Grete Samsa
+    introduction: I hate Ungeziefer.
+    <<: *defaults

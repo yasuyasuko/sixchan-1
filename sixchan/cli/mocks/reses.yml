@@ -1,0 +1,58 @@
+class: Res
+depends:
+  - Thread
+testThreadDefaults: &testThreadDefaults
+  thread_id: !!python/object/apply:uuid.UUID
+    - 00746872-4000-0000-a000-000000000001
+gregorThreadDefaults: &gregorThreadDefaults
+  thread_id: !!python/object/apply:uuid.UUID
+    - 00746872-4000-0000-a000-000000000002
+records:
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000001
+    number: 1
+    who: xMpCOKC5I4INzFCab3WEmw
+    body: ぬるぽ
+    created_at: 2022-01-01 00:00:01.000
+    updated_at: 2022-01-01 00:00:01.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000002
+    number: 2
+    who: yB5yjZ1ML2NvBn+JzBSGLA
+    body: ぬるぽぽ
+    created_at: 2022-01-01 00:00:02.000
+    updated_at: 2022-01-01 00:00:02.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000003
+    number: 3
+    who: 7MvIfktc4v4oMI/Z8qe68w
+    body: ぬるぽぽぽ
+    created_at: 2022-01-01 00:00:03.000
+    updated_at: 2022-01-01 00:00:03.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000004
+    number: 4
+    who: qH/2eaLz5x2RgaZ7dUISLA
+    body: ぬるぽぽぽぽ
+    created_at: 2022-01-01 00:00:04.000
+    updated_at: 2022-01-01 00:00:04.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000005
+    number: 5
+    who: R7zlx09Yn0hn29V+nKn4CA
+    body: 登録ユーザぬるぽ
+    created_at: 2022-01-01 00:00:05.000
+    updated_at: 2022-01-01 00:00:05.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000006
+    number: 1
+    who: R7zlx09Yn0hn29V+nKn4CA
+    body: わかるやついる？
+    created_at: 1912-11-24 00:07:32.821
+    updated_at: 1912-11-24 00:07:32.821
+    <<: *gregorThreadDefaults

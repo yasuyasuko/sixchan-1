@@ -188,7 +188,9 @@ class AnonymousAuthor(db.Model):
 class OnymousAuthor(db.Model):
     __tablename__ = "onymous_authors"
     res_id = db.Column(UUID(), db.ForeignKey("reses.id"), primary_key=True)
-    author_id = db.Column(UUID(), db.ForeignKey("user_profiles.id"), nullable=False)
+    author_id = db.Column(
+        UUID(), db.ForeignKey("user_profiles.account_id"), nullable=False
+    )
 
 
 class Res(UUIDMixin, TimestampMixin, db.Model):

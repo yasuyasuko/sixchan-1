@@ -1,0 +1,17 @@
+class: Thread
+depends:
+  - Board
+defaults: &defaults
+  created_at: 2022-01-01 00:00:00.000
+  updated_at: 2022-01-01 00:00:00.000
+  board_id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000035
+records:
+  - id: !!python/object/apply:uuid.UUID
+    - 00746872-4000-0000-a000-000000000001
+    name: テストスレッド
+    <<: *defaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00746872-4000-0000-a000-000000000002
+    name: 朝起きたら虫になってたんだがｗｗｗ
+    <<: *defaults

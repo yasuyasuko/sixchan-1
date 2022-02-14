@@ -1,0 +1,195 @@
+class: Board
+depends:
+  - BoardCategory
+defaults: &defaults
+  created_at: 2022-01-01 00:00:00.000
+  updated_at: 2022-01-01 00:00:00.000
+langDefaults: &langDefaults
+  category_id: !!python/object/apply:uuid.UUID
+    - 63617465-4000-0000-a000-000000000001
+  <<: *defaults
+devDefaults: &devDefaults
+  category_id: !!python/object/apply:uuid.UUID
+    - 63617465-4000-0000-a000-000000000002
+  <<: *defaults
+records:
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000001
+    name: C板
+    description: C言語についての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000002
+    name: C++板
+    description: C++についての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000003
+    name: C#板
+    description: C#についての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000004
+    name: Clojure板
+    description: Clojureについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000005
+    name: COBOL板
+    description: COBOLについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000006
+    name: Dart板
+    description: Dartについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000007
+    name: Elixir板
+    description: Elixirについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000008
+    name: FORTRAN板
+    description: FORTRANについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000009
+    name: Go板
+    description: Goについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000010
+    name: Haskel板
+    description: Haskelについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000011
+    name: Java板
+    description: Javaについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000012
+    name: JavaScript板
+    description: JavaScriptについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000013
+    name: Julia板
+    description: Juliaについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000014
+    name: Kotlin板
+    description: Kotlinについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000015
+    name: LISP板
+    description: LISPについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000016
+    name: Lua板
+    description: Luaについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000017
+    name: Mathmatica板
+    description: Mathmaticaについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000018
+    name: MATLAB板
+    description: MATLABについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000019
+    name: Nim板
+    description: Nimについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000020
+    name: Objective-C板
+    description: Objective-Cについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000021
+    name: Perl板
+    description: Perlについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000022
+    name: PHP板
+    description: PHPについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000023
+    name: PowerShell板
+    description: PowerShellについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000024
+    name: Processing板
+    description: Processingについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000025
+    name: Prolog板
+    description: Prologについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000026
+    name: Python板
+    description: Pythonについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000027
+    name: R板
+    description: Rについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000028
+    name: Ruby板
+    description: Rubyについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000029
+    name: Rust板
+    description: Rustについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000030
+    name: Scala板
+    description: Scalaについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000031
+    name: Smalltalk板
+    description: Smalltalkについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000032
+    name: Swift板
+    description: Swiftについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000033
+    name: TypeScript板
+    description: TypeScriptについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000034
+    name: Visual Basic板
+    description: Visual Basicについての板です。多言語の誹謗中傷は禁止です。
+    <<: *langDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000035
+    name: 開発テスト板
+    description: 開発テスト用のスレッドです。一般ユーザも参加できます。
+    <<: *devDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00697461-4000-0000-a000-000000000036
+    name: 開発テスト+板
+    description: 開発テスト用の予備スレッドです。一般ユーザも参加できます。
+    <<: *devDefaults

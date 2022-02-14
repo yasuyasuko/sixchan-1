@@ -1,0 +1,18 @@
+class: UserAccount
+defaults: &defaults
+  created_at: 2022-01-01 00:00:00.000
+  updated_at: 2022-01-01 00:00:00.000
+  password_hash: !!python/object/apply:werkzeug.security.generate_password_hash
+    - "pass123!"
+  activated: true
+records:
+  - id: !!python/object/apply:uuid.UUID
+    - 75736572-4000-0000-a000-000000000001
+    username: gregor_samsa
+    email: gregor_samsa@example.com
+    <<: *defaults
+  - id: !!python/object/apply:uuid.UUID
+    - 75736572-4000-0000-a000-000000000002
+    username: grete_samsa
+    email: grete_samsa@example.com
+    <<: *defaults
