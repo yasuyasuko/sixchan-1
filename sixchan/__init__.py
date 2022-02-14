@@ -15,7 +15,14 @@ from sixchan.config import FLASH_LEVEL, FLASH_MESSAGE, Config
 from sixchan.email import mail, send_email
 from sixchan.filters import authorformat, datetimeformat, uuidshort, whoformat
 from sixchan.forms import AccountForm, LoginForm, ResForm, SignupForm, ThreadForm
-from sixchan.models import ActivationToken, Board, BoardCategory, Thread, User, db
+from sixchan.models import (
+    ActivationToken,
+    Board,
+    BoardCategory,
+    Thread,
+    UserAccount,
+    db,
+)
 from sixchan.utils import normalize_uuid_string
 
 app = Flask(__name__)
@@ -35,8 +42,8 @@ app.jinja_env.globals["get_flash_color"] = FLASH_LEVEL.get_flash_color
 
 
 @login_manager.user_loader
-def load_user(username: str) -> Optional[User]:
-    return User.query.filter_by(username=username).first()
+def load_user(username: str) -> Optional[UserAccount]:
+    return UserAccount.query.filter_by(username=username).first()
 
 
 if app.config["DEBUG"]:
@@ -114,7 +121,7 @@ def thread(thread_id: str):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first_or_404()
+        user = UserAccount.query.filter_by(username=form.username.data).first_or_404()
         if not user.activated:
             flash(FLASH_MESSAGE.ACTIVATION_INCOMPLETE, FLASH_LEVEL.ERROR)
             return redirect(url_for("index"))
@@ -138,14 +145,14 @@ def logout():
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
-        if User.query.filter_by(username=form.username.data).first():
+        if UserAccount.query.filter_by(username=form.username.data).first():
             flash(FLASH_MESSAGE.USERNAME_ALREADY_EXISTS, FLASH_LEVEL.ERROR)
             return render_template("signup.html", form=form)
-        if User.query.filter_by(email=form.email.data).first():
+        if UserAccount.query.filter_by(email=form.email.data).first():
             flash(FLASH_MESSAGE.EMAIL_ALREADY_EXISTS, FLASH_LEVEL.ERROR)
             return render_template("signup.html", form=form)
 
-        new_user = User.signup(
+        new_user = UserAccount.signup(
             username=form.username.data,
             email=form.email.data,
             password=form.password.data,
@@ -178,7 +185,7 @@ def activate(token_string: str):
         # TODO: reissue token?
         return redirect(url_for("index"))
 
-    user = User.query.get(token.user_id)
+    user = UserAccount.query.get(token.user_id)
     if user.activated:
         flash(FLASH_MESSAGE.ACTIVATION_ALREADY_DONE, FLASH_LEVEL.INFO)
         return redirect(url_for("login"))

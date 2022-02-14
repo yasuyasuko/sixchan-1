@@ -149,12 +149,22 @@ class UserProfile(TimestampMixin, db.Model):
     reses = db.relationship("Res", backref="author")
 
 
+class AnonymousAuthor(db.Model):
+    __tablename__ = "anonymous_authors"
+    res_id = db.Column(UUID(), db.ForeignKey("reses.id"), primary_key=True)
+    name = db.Column(db.String(ANON_NAME_MAX_LENGTH), nullable=True)
+    email = db.Column(db.String(EMAIL_MAX_LENGTH), nullable=True)
+
+
+class OnymousAuthor(db.Model):
+    __tablename__ = "onymous_authors"
+    res_id = db.Column(UUID(), db.ForeignKey("reses.id"), primary_key=True)
+    author_id = db.Column(UUID(), db.ForeignKey("user_profiles.id"), nullable=False)
+
+
 class Res(UUIDMixin, TimestampMixin, db.Model):
     __tablename__ = "reses"
     number = db.Column(db.Integer, nullable=False)
-    anon_name = db.Column(db.String(ANON_NAME_MAX_LENGTH), nullable=True)
-    anon_email = db.Column(db.String(EMAIL_MAX_LENGTH), nullable=True)
-    author_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=True)
     who = db.Column(db.String(22), nullable=False)
     body = db.Column(db.Text, nullable=False)
     thread_id = db.Column(UUID(), db.ForeignKey("threads.id"), nullable=False)
