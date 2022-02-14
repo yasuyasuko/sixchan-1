@@ -3,19 +3,14 @@ from datetime import datetime
 from flask import Blueprint, abort, redirect, render_template, request, url_for
 from flask_login import current_user
 
+from sixchan.main import queries
 from sixchan.main.forms import (
     AnonymousResForm,
     AnonymousThreadForm,
     OnymousResForm,
     OnymousThreadForm,
 )
-from sixchan.models import (
-    AnonymousUser,
-    Board,
-    BoardCategory,
-    Thread,
-    db,
-)
+from sixchan.models import AnonymousUser, Board, BoardCategory, Thread, db
 from sixchan.utils import normalize_uuid_string
 
 main = Blueprint("main", __name__)
@@ -88,3 +83,10 @@ def thread(thread_id: str):
         "anchor": "res-form" if form.is_submitted() else None,
     }
     return render_template("main/thread.html", **context)
+
+
+@main.get("/users/<username>")
+def user(username):
+    user_ = queries.get_user(username)
+    context = {"user": user_}
+    return render_template("main/user.html", **context)
