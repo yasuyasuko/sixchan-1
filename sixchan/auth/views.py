@@ -25,7 +25,7 @@ def login():
             return redirect(url_for("index"))
         else:
             flash(FLASH_MESSAGE.AUTHENTICATION_FAILED, FLASH_LEVEL.ERROR)
-    return render_template("login.html", form=form)
+    return render_template("user/login.html", form=form)
 
 
 @auth.get("/logout")
@@ -41,10 +41,10 @@ def signup():
     if form.validate_on_submit():
         if UserAccount.query.filter_by(username=form.username.data).first():
             flash(FLASH_MESSAGE.USERNAME_ALREADY_EXISTS, FLASH_LEVEL.ERROR)
-            return render_template("signup.html", form=form)
+            return render_template("user/signup.html", form=form)
         if UserAccount.query.filter_by(email=form.email.data).first():
             flash(FLASH_MESSAGE.EMAIL_ALREADY_EXISTS, FLASH_LEVEL.ERROR)
-            return render_template("signup.html", form=form)
+            return render_template("user/signup.html", form=form)
 
         new_user = UserAccount.signup(
             username=form.username.data,
@@ -65,7 +65,7 @@ def signup():
         flash(FLASH_MESSAGE.ACTIVATION_LINK_SEND, FLASH_LEVEL.SUCCESS)
         return redirect(url_for("index"))
 
-    return render_template("signup.html", form=form)
+    return render_template("user/signup.html", form=form)
 
 
 @auth.get("/activate/<token_string>")
@@ -82,7 +82,7 @@ def activate(token_string: str):
     user = UserAccount.query.get(token.user_id)
     if user.activated:
         flash(FLASH_MESSAGE.ACTIVATION_ALREADY_DONE, FLASH_LEVEL.INFO)
-        return redirect(url_for("login"))
+        return redirect(url_for(".login"))
     else:
         user.activate()
         db.session.commit()
