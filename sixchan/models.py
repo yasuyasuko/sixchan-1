@@ -71,23 +71,42 @@ class TimestampMixin:
     )
 
 
-class ActivationToken(db.Model):
-    __tablename__ = "activation_tokens"
+class ExpirableTokenMixin:
     token = db.Column(db.String(128), primary_key=True, nullable=False)
-    user_id = db.Column(UUID(), db.ForeignKey("users.id"), nullable=False)
     expires_at = db.Column(db.DateTime, nullable=False)
-
-    @classmethod
-    def generate(cls, user, expire_duration: timedelta) -> str:
-        token = secrets.token_urlsafe()
-        expires_at = datetime.utcnow() + expire_duration
-        obj = cls(token=token, user_id=user.id, expires_at=expires_at)
-        db.session.add(obj)
-        return token
 
     @property
     def expired(self):
         return self.expires_at < datetime.utcnow()
+
+
+class ActivationToken(db.Model):
+    __tablename__ = "activation_tokens"
+    account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=False)
+
+    @classmethod
+    def generate(cls, user, expires_duration: timedelta) -> str:
+        token = secrets.token_urlsafe()
+        expires_at = datetime.utcnow() + expires_duration
+        obj = cls(token=token, user_id=user.id, expires_at=expires_at)
+        db.session.add(obj)
+        return token
+
+
+class ChangeEmailConfiramtionToken(db.Model):
+    __tablename__ = "change_email_confirmation_tokens"
+    account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=False)
+    new_email = db.Column(db.String(128), nullable=False)
+
+    @classmethod
+    def generate(cls, user, expires_duration: timedelta, new_email: str) -> str:
+        token = secrets.token_urlsafe()
+        expires_at = datetime.utcnow() + expires_duration
+        obj = cls(
+            token=token, user_id=user.id, expires_at=expires_at, new_email=new_email
+        )
+        db.session.add(obj)
+        return token
 
 
 class AnonymousUser(AnonymousUserMixin):
