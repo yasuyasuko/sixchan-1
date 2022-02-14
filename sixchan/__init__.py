@@ -1,16 +1,23 @@
 from typing import Optional
 
-from flask import Flask, render_template
+from flask import Flask
+from flask import render_template
 
-from sixchan.config import FLASH_LEVEL, FLASH_MESSAGE, Config
-from sixchan.extensions import csrf, db, login_manager, mail
-from sixchan.models import AnonymousUser, UserAccount
+from sixchan.config import FLASH_LEVEL
+from sixchan.config import FLASH_MESSAGE
+from sixchan.config import Config
+from sixchan.extensions import csrf
+from sixchan.extensions import db
+from sixchan.extensions import login_manager
+from sixchan.extensions import mail
+from sixchan.models import AnonymousUser
+from sixchan.models import UserAccount
 
 
 def _debug_mode(app):
     import logging
-    import sys
     import re
+    import sys
     from datetime import datetime
 
     import sqlparse
@@ -79,7 +86,9 @@ def create_app():
         return UserAccount.query.filter_by(username=username).first()
 
     # setup jinja2
-    from sixchan.filters import ago_from_now_format, datetimeformat, uuidshort
+    from sixchan.filters import ago_from_now_format
+    from sixchan.filters import datetimeformat
+    from sixchan.filters import uuidshort
     from sixchan.utils import paginate
 
     app.add_template_filter(datetimeformat)

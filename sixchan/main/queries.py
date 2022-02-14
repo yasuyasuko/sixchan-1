@@ -1,18 +1,17 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import NamedTuple, Optional
+from typing import NamedTuple
+from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import func
 
-from sixchan.models import (
-    AnonymousAuthor,
-    OnymousAuthor,
-    Res,
-    Thread,
-    UserAccount,
-    UserProfile,
-)
+from sixchan.models import AnonymousAuthor
+from sixchan.models import OnymousAuthor
+from sixchan.models import Res
+from sixchan.models import Thread
+from sixchan.models import UserAccount
+from sixchan.models import UserProfile
 from sixchan.queries import PaginationQueryModel
 
 

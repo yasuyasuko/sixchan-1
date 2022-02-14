@@ -1,24 +1,30 @@
 import json
 import secrets
 import uuid
-from datetime import datetime, timedelta
-from typing import Any, Optional, Text, Union
+from datetime import datetime
+from datetime import timedelta
+from typing import Any
+from typing import Optional
+from typing import Text
+from typing import Union
 
-from flask_login import AnonymousUserMixin, UserMixin
+from flask_login import AnonymousUserMixin
+from flask_login import UserMixin
 from sqlalchemy.dialects.postgresql import UUID as PostgreUUID
 from sqlalchemy.engine import Dialect
-from sqlalchemy.types import CHAR, TypeDecorator, TypeEngine
-from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy.types import CHAR
+from sqlalchemy.types import TypeDecorator
+from sqlalchemy.types import TypeEngine
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
-from sixchan.config import (
-    ANON_NAME_MAX_LENGTH,
-    BOARD_CATEGORY_NAME_MAX_LENGTH,
-    BOARD_NAME_MAX_LENGTH,
-    DISPLAY_NAME_MAX_LENGTH,
-    EMAIL_MAX_LENGTH,
-    THREAD_NAME_MAX_LENGTH,
-    USERNAME_MAX_LENGTH,
-)
+from sixchan.config import ANON_NAME_MAX_LENGTH
+from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
+from sixchan.config import BOARD_NAME_MAX_LENGTH
+from sixchan.config import DISPLAY_NAME_MAX_LENGTH
+from sixchan.config import EMAIL_MAX_LENGTH
+from sixchan.config import THREAD_NAME_MAX_LENGTH
+from sixchan.config import USERNAME_MAX_LENGTH
 from sixchan.extensions import db
 from sixchan.utils import get_b64encoded_digest_string_from_words
 

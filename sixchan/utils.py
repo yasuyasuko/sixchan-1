@@ -1,8 +1,10 @@
 import base64
 import hashlib
 from collections import deque
-from typing import Hashable, Optional, TypeVar, Union
-
+from typing import Hashable
+from typing import Optional
+from typing import TypeVar
+from typing import Union
 
 T = TypeVar("T")
 

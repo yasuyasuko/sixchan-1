@@ -1,20 +1,26 @@
 from datetime import datetime
 
-from flask import Blueprint, abort, redirect, render_template, request, url_for
+from flask import Blueprint
+from flask import abort
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
 from flask_login import current_user
 from sqlalchemy.orm import joinedload
 
 from sixchan.config import THREADS_PER_PAGE
 from sixchan.extensions import db
 from sixchan.main import queries
-from sixchan.main.forms import (
-    AnonymousResForm,
-    AnonymousThreadForm,
-    OnymousResForm,
-    OnymousThreadForm,
-)
+from sixchan.main.forms import AnonymousResForm
+from sixchan.main.forms import AnonymousThreadForm
+from sixchan.main.forms import OnymousResForm
+from sixchan.main.forms import OnymousThreadForm
 from sixchan.main.utils import normalize_uuid_string
-from sixchan.models import AnonymousUser, Board, BoardCategory, Thread
+from sixchan.models import AnonymousUser
+from sixchan.models import Board
+from sixchan.models import BoardCategory
+from sixchan.models import Thread
 
 main = Blueprint("main", __name__)
 

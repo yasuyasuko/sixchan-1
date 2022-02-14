@@ -1,13 +1,21 @@
 from datetime import timedelta
 
-from flask import Blueprint, flash, redirect, render_template, url_for
-from flask_login import login_user, logout_user
+from flask import Blueprint
+from flask import flash
+from flask import redirect
+from flask import render_template
+from flask import url_for
+from flask_login import login_user
+from flask_login import logout_user
 
-from sixchan.config import FLASH_LEVEL, FLASH_MESSAGE
-from sixchan.extensions import db
+from sixchan.auth.forms import LoginForm
+from sixchan.auth.forms import SignupForm
+from sixchan.config import FLASH_LEVEL
+from sixchan.config import FLASH_MESSAGE
 from sixchan.email import send_email
-from sixchan.auth.forms import LoginForm, SignupForm
-from sixchan.models import ActivationToken, UserAccount
+from sixchan.extensions import db
+from sixchan.models import ActivationToken
+from sixchan.models import UserAccount
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 

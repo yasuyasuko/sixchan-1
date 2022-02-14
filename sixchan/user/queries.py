@@ -3,9 +3,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import NamedTuple
 
-from sqlalchemy import desc, func
+from sqlalchemy import desc
+from sqlalchemy import func
 
-from sixchan.models import Board, OnymousAuthor, Res, Thread, UserAccount
+from sixchan.models import Board
+from sixchan.models import OnymousAuthor
+from sixchan.models import Res
+from sixchan.models import Thread
+from sixchan.models import UserAccount
 from sixchan.queries import PaginationQueryModel
 from sixchan.utils import group_by
 

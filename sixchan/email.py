@@ -1,6 +1,7 @@
 from threading import Thread
 
-from flask import current_app, render_template
+from flask import current_app
+from flask import render_template
 from flask_mail import Message
 
 from sixchan.extensions import mail
