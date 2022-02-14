@@ -1,0 +1,61 @@
+{% extends "_base.html" %}
+{% from "_component.html" import TextField %}
+{% from "_component.html" import SubmitButton %}
+{% from "user/_component.html" import SidePanel %}
+{% block title %}{{ current_user.username }}{% endblock %}
+{% block content %}
+<div>
+    <h1 class="p-2 text-xl font-bold">@{{ current_user.username }}のアカウント</h1>
+    <div class="flex text-gray-600">
+        {{ SidePanel() }}
+        <div class="flex-auto">
+            <div class="p-4 bg-white rounded shadow ">
+                <h2 class="text-2xl text-center">ユーザー名の変更</h2>
+                <p class="mt-1 mb-2">
+                    表示名や自己紹介はプロフィールから編集できます。
+                </p>
+                <form action="" method="POST" id="account-form">
+                    {{ account_form.csrf_token }}
+                    {{ TextField(account_form.username)}}
+                    <div class="mt-2 text-center">
+                        {{ SubmitButton("変更", "account-form") }}
+                    </div>
+                </form>
+            </div>
+            <div class="p-4 mt-4 bg-white rounded shadow">
+                <h2 class="text-2xl text-center">メールアドレスの変更</h2>
+                <p class="mt-1 mb-2">
+                    メールアドレスを変更する際は、現在ご登録されているメールアドレスに確認メールが送信されます。
+                    送信されたメールには変更完了リンクが添付されていますので、
+                    <span class="text-red-500">1時間以内にリンクへアクセスしてください</span>。
+                    １時間以上経過してしまうと、変更のやり直しが必要になります。
+                </p>
+                <p class="font-semibold">現在のメールアドレス</p>
+                <p>{{ current_user.email }}</p>
+                <form action="" method="POST" id="change-email-form">
+                    {{ change_email_form.csrf_token }}
+                    {{ TextField(change_email_form.new_email)}}
+                    <div class="mt-2 text-center">
+                        {{ SubmitButton("変更", "change-email-form") }}
+                    </div>
+                </form>
+            </div>
+            <div class="p-4 mt-4 bg-white rounded shadow">
+                <h2 class="text-2xl text-center">パスワードの変更</h2>
+                <p class="mt-1 mb-2">
+                    パスワードを変更する際は、ご本人確認のため現在のパスワードも入力するようお願いします。
+                </p>
+                <form action="" method="POST" id="change-password-form">
+                    {{ change_password_form.csrf_token }}
+                    {{ TextField(change_password_form.current_password)}}
+                    {{ TextField(change_password_form.new_password)}}
+                    {{ TextField(change_password_form.new_password_confirmation)}}
+                    <div class="mt-2 text-center">
+                        {{ SubmitButton("変更", "change-password-form") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

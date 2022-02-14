@@ -1,0 +1,29 @@
+<!--
+SidePanelLink
+    endpoint: the endpoint of the URL (name of the function).
+    text: link text.
+    icon: google material icon's name.
+ -->
+{% macro SidePanelLink(endpoint, text, icon) %}
+{% set container = "mb-1 " %}
+{% if request.endpoint == endpoint %}
+{% set container = container + "text-blue-500 bg-white rounded" %}
+{% endif %}
+<li class="{{ container }}">
+    <a class="inline-flex items-center p-1 hover:text-blue-500" href="{{ url_for(endpoint) }}">
+        <span class="p-1 material-icons">{{icon}}</span>
+        {{ text }}
+    </a>
+</li>
+{% endmacro %}
+
+<!-- SidePanel -->
+{% macro SidePanel() %}
+<div class="min-w-min">
+    <ul class="flex flex-col w-56 px-2 text-xl">
+        {{ SidePanelLink("user.account", "アカウント", "account_circle") }}
+        {{ SidePanelLink("user.profile", "プロフィール", "badge") }}
+        {{ SidePanelLink("user.history", "投稿履歴", "history") }}
+    </ul>
+</div>
+{% endmacro %}

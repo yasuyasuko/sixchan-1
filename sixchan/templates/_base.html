@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" id="favicon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{ url_for('static', filename='js/toast.min.js') }}"></script>
     <title>{% block title %}{% endblock %}</title>
@@ -14,19 +15,19 @@
     <!-- Header -->
     <nav class="px-6 py-2 bg-white shadow">
         <div class="flex items-center max-w-screen-lg mx-auto">
-            <a href="{{ url_for('index') }}" class="flex-auto">
+            <a href="{{ url_for('main.index') }}" class="flex-auto">
                 <img class="h-8" src="{{ url_for('static', filename='img/sixchan-logo.png') }}"
                     alt="6channel site logo" />
             </a>
             <div>
-                <a href="{{ url_for('index') }}" class="mx-2 hover:text-blue-500">板一覧</a>
-                <a href="{{ url_for('index') }}" class="mx-2 hover:text-blue-500">ガイドライン</a>
+                <a href="{{ url_for('main.index') }}" class="mx-2 hover:text-blue-500">板一覧</a>
+                <a href="{{ url_for('main.index') }}" class="mx-2 hover:text-blue-500">ガイドライン</a>
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('account') }}" class="mx-2 hover:text-blue-500">マイページ</a>
-                <a href="{{ url_for('logout') }}" class="mx-2 hover:text-blue-500">ログアウト</a>
+                <a href="{{ url_for('user.account') }}" class="mx-2 hover:text-blue-500">マイページ</a>
+                <a href="{{ url_for('auth.logout') }}" class="mx-2 hover:text-blue-500">ログアウト</a>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="mx-2 hover:text-blue-500">ログイン</a>
-                <a href="{{ url_for('signup') }}" class="mx-2 hover:text-blue-500">新規登録</a>
+                <a href="{{ url_for('auth.login') }}" class="mx-2 hover:text-blue-500">ログイン</a>
+                <a href="{{ url_for('auth.signup') }}" class="mx-2 hover:text-blue-500">新規登録</a>
                 {% endif %}
             </div>
         </div>

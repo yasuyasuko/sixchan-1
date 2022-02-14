@@ -37,19 +37,27 @@ class FLASH_LEVEL:
 
 
 class FLASH_MESSAGE:
-    LOGIN = "ログインしました"
-    LOGIN_REQUIRED = "このページにアクセスするためにはログインが必要です"
-    LOGOUT = "ログアウトしました"
-    AUTHENTICATION_FAILED = "認証に失敗しました"
-    USERNAME_ALREADY_EXISTS = "そのユーザー名は既に使われています"
-    EMAIL_ALREADY_EXISTS = "そのメールアドレスはすでに使われいます"
-    ACTIVATION_LINK_SEND = "確認メールを送信しました。24時間以内にメールからアクティベーションを完了してください"
-    ACTIVATION_TOKEN_INVALID = "無効なアクティベーショントークンです"
-    ACTIVATION_TOKEN_EXPIRED = "アクティベーショントークンの有効期限が切れています"
     ACTIVATION_ALREADY_DONE = "既にアクティベーション済みです"
     ACTIVATION_COMPLETE = "アクティベーションが完了しました"
     ACTIVATION_INCOMPLETE = "アクティベーションが完了していません"
+    ACTIVATION_LINK_SEND = "確認メールを送信しました。24時間以内にメールからアクティベーションを完了してください"
+    ACTIVATION_TOKEN_EXPIRED = "アクティベーショントークンの有効期限が切れています"
+    ACTIVATION_TOKEN_INVALID = "無効なアクティベーショントークンです"
+    AUTHENTICATION_FAILED = "認証に失敗しました"
+    CHANGE_EMAIL_COMPLETE_FOR_LOGIN_USER = "メールアドレスの変更が完了しました"
+    CHANGE_EMAIL_COMPLETE_FOR_NOTLOGIN_USER = "メールアドレスの変更が完了しました。ログインし直してください"
+    CHANGE_EMAIL_CONFIRAMTION_LINK_SEND = "確認メールを送信しました。1時間以内にメールから確認完了してください"
+    CHANGE_PASSWORD_SUCCESS = "パスワードが変更されました"
+    CONFIRMATION_TOKEN_EXPIRED = "確認トークンの有効期限が切れています。もう１度変更からやり直してください"
+    CONFIRMATION_TOKEN_INVALID = "無効な確認トークンです"
+    EMAIL_ALREADY_EXISTS = "そのメールアドレスはすでに使われいます"
+    LOGIN = "ログインしました"
+    LOGIN_REQUIRED = "このページにアクセスするためにはログインが必要です"
+    LOGOUT = "ログアウトしました"
+    USER_DOESNT_EXIST = "ユーザーが存在しません"
     USER_INFO_UPDATE = "ユーザー情報を更新しました"
+    USER_PROFILE_UPDATE = "プロフィールを更新しました"
+    USERNAME_ALREADY_EXISTS = "そのユーザー名は既に使われています"
 
 
 class Config:

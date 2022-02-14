@@ -100,21 +100,3 @@ def create_app():
     app.register_blueprint(database)
 
     return app
-
-
-# @app.route("/account", methods=["GET", "POST"])
-# @login_required
-# def account():
-#     form = AccountForm()
-#     if form.validate_on_submit():
-#         current_user.username = form.username.data
-#         current_user.display_name = form.display_name.data
-#         db.session.commit()
-#         flash(FLASH_MESSAGE.USER_INFO_UPDATE, FLASH_LEVEL.SUCCESS)
-#         return redirect(url_for("account"))
-
-#     if not form.is_submitted():
-#         form.username.data = current_user.username
-#         form.display_name.data = current_user.display_name
-
-#     return render_template("account.html", form=form)
