@@ -1,5 +1,7 @@
 {% extends "_base.html" %}
-{% from "_macro.html" import render_text_field, render_checkbox_field, render_submit_button %}
+{% from "_component.html" import TextField %}
+{% from "_component.html" import CheckboxField %}
+{% from "_component.html" import SubmitButton %}
 {% block title %}ログイン{% endblock %}
 {% block content %}
 <div class="flex justify-center">
@@ -7,11 +9,11 @@
         <h1 class="text-4xl font-thin text-center">おかえりなさい</h1>
         <form action="" method="POST" id="login-form">
             {{ form.csrf_token }}
-            {{ render_text_field(form.username) }}
-            {{ render_text_field(form.password) }}
-            {{ render_checkbox_field(form.remember_me) }}
+            {{ TextField(form.username) }}
+            {{ TextField(form.password) }}
+            {{ CheckboxField(form.remember_me) }}
             <div class="mt-2 text-center">
-                {{ render_submit_button("ログイン", "login-form") }}
+                {{ SubmitButton("ログイン", "login-form") }}
                 <div class="mt-2">
                     <a class="text-sm font-bold hover:text-blue-500" href="#">
                         パスワードを忘れてしまいましたか?

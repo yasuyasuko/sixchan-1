@@ -1,5 +1,7 @@
 {% extends "_base.html" %}
-{% from "_macro.html" import render_text_field, render_checkbox_field, render_submit_button %}
+{% from "_component.html" import TextField %}
+{% from "_component.html" import CheckboxField %}
+{% from "_component.html" import SubmitButton %}
 {% block title %}新規登録{% endblock %}
 {% block content %}
 <div class="flex justify-center">
@@ -7,14 +9,14 @@
         <h1 class="text-4xl font-thin text-center">ユーザー新規登録</h1>
         <form action="" method="POST" id="signup-form">
             {{ form.csrf_token }}
-            {{ render_text_field(form.email) }}
-            {{ render_text_field(form.username) }}
-            {{ render_text_field(form.display_name) }}
-            {{ render_text_field(form.password) }}
-            {{ render_text_field(form.password_confirmation) }}
-            {{ render_checkbox_field(form.remember_me) }}
+            {{ TextField(form.email) }}
+            {{ TextField(form.username) }}
+            {{ TextField(form.display_name) }}
+            {{ TextField(form.password) }}
+            {{ TextField(form.password_confirmation) }}
+            {{ CheckboxField(form.remember_me) }}
             <div class="mt-2 text-center">
-                {{ render_submit_button("新規登録", "signup-form") }}
+                {{ SubmitButton("新規登録", "signup-form") }}
             </div>
         </form>
     </div>
