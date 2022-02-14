@@ -93,9 +93,11 @@ def create_app():
     from sixchan.cli.database import database
     from sixchan.cli.dev import dev
     from sixchan.main.views import main
+    from sixchan.user.views import user
 
     app.register_blueprint(auth)
     app.register_blueprint(main)
+    app.register_blueprint(user)
     app.register_blueprint(dev)
     app.register_blueprint(database)
 
