@@ -1,10 +1,11 @@
+from ctypes import Union
 import json
 import secrets
 import uuid
 from datetime import datetime, timedelta
 from typing import Any, Optional, Text
 
-from flask_login import UserMixin
+from flask_login import AnonymousUserMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID as PostgreUUID
 from sqlalchemy.engine import Dialect
@@ -87,6 +88,16 @@ class ActivationToken(db.Model):
     @property
     def expired(self):
         return self.expires_at < datetime.utcnow()
+
+
+class AnonymousUser(AnonymousUserMixin):
+    def __init__(self, name: Optional[str] = None, email: Optional[str] = None) -> None:
+        self.name = name
+        self.email = email
+
+    @property
+    def has_personal_information(self) -> bool:
+        return bool(self.name or self.email)
 
 
 class UserAccount(UUIDMixin, TimestampMixin, UserMixin, db.Model):
@@ -194,20 +205,27 @@ class Thread(UUIDMixin, TimestampMixin, db.Model):
         return last_res.created_at
 
     def post_res(
-        self,
-        body: str,
-        who_seeds: list[str],
-        anon_name: Optional[str] = None,
-        anon_email: Optional[str] = None,
+        self, body: str, who_seeds: list[str], user: Union[UserAccount, AnonymousUser]
     ):
+        new_res_id = uuid.uuid4()
         new_res = Res(
+            id=new_res_id,
             number=self.next_res_number,
-            anon_name=anon_name or None,
-            anon_email=anon_email or None,
             who=get_b64encoded_digest_string_from_words(*who_seeds),
             body=body,
         )
         self.reses.append(new_res)
+
+        if isinstance(user, UserAccount):
+            db.session.add(OnymousAuthor(res_id=new_res_id, author_id=user.id))
+        elif isinstance(user, AnonymousUser):
+            if user.has_personal_information:
+                db.session.add(
+                    AnonymousAuthor(res_id=new_res_id, name=user.name, email=user.email)
+                )
+        else:
+            pass
+
         return new_res
 
 

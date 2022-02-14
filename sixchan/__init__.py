@@ -17,6 +17,7 @@ from sixchan.filters import authorformat, datetimeformat, uuidshort, whoformat
 from sixchan.forms import AccountForm, LoginForm, ResForm, SignupForm, ThreadForm
 from sixchan.models import (
     ActivationToken,
+    AnonymousUser,
     Board,
     BoardCategory,
     Thread,
@@ -34,6 +35,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message = FLASH_MESSAGE.LOGIN_REQUIRED
 login_manager.login_message_category = FLASH_LEVEL.ERROR
+login_manager.anonymous_user = AnonymousUser
 app.add_template_filter(datetimeformat)
 app.add_template_filter(authorformat)
 app.add_template_filter(whoformat)
