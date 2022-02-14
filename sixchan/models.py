@@ -173,7 +173,9 @@ class UserProfile(TimestampMixin, db.Model):
     account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), primary_key=True)
     display_name = db.Column(db.String(DISPLAY_NAME_MAX_LENGTH), nullable=True)
     introduction = db.Column(db.Text, nullable=True)
-    reses = db.relationship("Res", backref="author")
+    reses = db.relationship(
+        "Res", backref=db.backref("author", uselist=False), secondary="onymous_authors"
+    )
 
 
 class AnonymousAuthor(db.Model):
