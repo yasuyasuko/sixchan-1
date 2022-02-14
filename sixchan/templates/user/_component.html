@@ -27,3 +27,22 @@ SidePanelLink
     </ul>
 </div>
 {% endmacro %}
+
+<!--
+ Breadcrumb
+     thread: UserThreadQueryModel
+  -->
+{% macro Breadcrumb(thread) %}
+<p class="inline-flex items-center font-semibold text-green-500">
+    <a class="font-semibold hover:text-green-400"
+        href="{{ url_for('main.board', board_id=thread.board_id | uuidshort) }}">
+        {{ thread.board_name }}
+    </a>
+    <span class="text-gray-500 material-icons">
+        chevron_right
+    </span>
+    <a class="font-semibold hover:text-green-400" href="{{ url_for('main.thread', thread_id=thread.id | uuidshort) }}">
+        {{ thread.name }}
+    </a>
+</p>
+{% endmacro %}

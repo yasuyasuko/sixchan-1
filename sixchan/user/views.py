@@ -1,19 +1,23 @@
 from datetime import timedelta
-from flask import Blueprint, flash, redirect, render_template, url_for
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from sixchan.config import FLASH_LEVEL as LEVEL
+from sixchan.config import (
+    FLASH_LEVEL as LEVEL,
+    THREADS_HISTORY_PER_PAGE,
+)
 from sixchan.config import FLASH_MESSAGE as MSG
 from sixchan.email import send_email
 from sixchan.extensions import db
 from sixchan.models import ChangeEmailConfiramtionToken, UserAccount
+from sixchan.user import queries
 from sixchan.user.forms import (
-    ChangeUsernameForm,
     ChangeEmailForm,
     ChangePasswordForm,
+    ChangeUsernameForm,
     ProfileForm,
 )
-
 
 user = Blueprint("user", __name__, url_prefix="/me")
 
@@ -103,3 +107,14 @@ def profile():
         form.introduction.data = current_user.profile.introduction
     context = {"form": form}
     return render_template("user/profile.html", **context)
+
+
+@user.get("/history")
+@login_required
+def history():
+    page = request.args.get("page", default=1, type=int)
+    pagination = queries.get_threads_pagination(
+        current_user, page, THREADS_HISTORY_PER_PAGE
+    )
+    context = {"pagination": pagination}
+    return render_template("user/history.html", **context)

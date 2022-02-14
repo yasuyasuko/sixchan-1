@@ -1,6 +1,10 @@
 import base64
 import hashlib
 from collections import deque
+from typing import Hashable, Optional, TypeVar, Union
+
+
+T = TypeVar("T")
 
 
 def get_b64encoded_digest_string_from_words(*words: list[str]) -> str:
@@ -48,3 +52,12 @@ def paginate(page: int, pages: int, delta: int = 2, with_edge_conidtion: bool = 
         return pagination, edge_condition
     else:
         return pagination
+
+
+def group_by(
+    objs: list[T], key: str, as_list: Optional[bool] = False
+) -> Union[dict[Hashable, T], list[T]]:
+    ids = set([getattr(obj, key) for obj in objs])
+    if as_list:
+        return [[obj for obj in objs if getattr(obj, key) == id_] for id_ in ids]
+    return {id_: [obj for obj in objs if getattr(obj, key) == id_] for id_ in ids}
