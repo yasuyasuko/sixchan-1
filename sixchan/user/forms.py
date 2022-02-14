@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField
+from wtforms import PasswordField, StringField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp
 
 from sixchan.config import (
+    DISPLAY_NAME_MAX_LENGTH,
     PASSWORD_REGEX,
     USERNAME_MAX_LENGTH,
     USERNAME_REGEX,
@@ -46,4 +47,15 @@ class ChangePasswordForm(FlaskForm):
     new_password_confirmation = PasswordField(
         "新しいパスワード(確認)",
         validators=[DataRequired(), Regexp(PASSWORD_REGEX)],
+    )
+
+
+class ProfileForm(FlaskForm):
+    display_name = StringField(
+        "表示名",
+        validators=[Length(max=DISPLAY_NAME_MAX_LENGTH)],
+    )
+    introduction = TextAreaField(
+        "自己紹介",
+        validators=[Length(max=DISPLAY_NAME_MAX_LENGTH)],
     )

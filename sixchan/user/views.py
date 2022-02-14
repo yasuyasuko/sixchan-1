@@ -1,5 +1,5 @@
 from datetime import timedelta
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from sixchan.config import FLASH_LEVEL as LEVEL
@@ -7,10 +7,15 @@ from sixchan.config import FLASH_MESSAGE as MSG
 from sixchan.email import send_email
 from sixchan.extensions import db
 from sixchan.models import ChangeEmailConfiramtionToken, UserAccount
-from sixchan.user.forms import ChangeUsernameForm, ChangeEmailForm, ChangePasswordForm
+from sixchan.user.forms import (
+    ChangeUsernameForm,
+    ChangeEmailForm,
+    ChangePasswordForm,
+    ProfileForm,
+)
 
 
-user = Blueprint("user", __name__, url_prefix="me")
+user = Blueprint("user", __name__, url_prefix="/me")
 
 
 @user.route("/account", methods=["GET", "POST"])
@@ -59,7 +64,7 @@ def account():
         "change_email_form": change_email_form,
         "change_password_form": change_password_form,
     }
-    return render_template("account.html", **context)
+    return render_template("user/account.html", **context)
 
 
 @user.get("/confirm/<token_string>")
@@ -81,3 +86,20 @@ def confirm_email(token_string):
     else:
         flash(MSG.CHANGE_EMAIL_COMPLETE_FOR_NOTLOGIN_USER, LEVEL.SUCCESS)
         return redirect(url_for("auth.login"))
+
+
+@user.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    form = ProfileForm()
+    if form.validate_on_submit():
+        current_user.profile.display_name = form.display_name.data
+        current_user.profile.introduction = form.introduction.data
+        db.session.commit()
+        flash(MSG.USER_PROFILE_UPDATE, LEVEL.SUCCESS)
+        return redirect(url_for(".profile"))
+    if not form.is_submitted():
+        form.display_name.data = current_user.profile.display_name
+        form.introduction.data = current_user.profile.introduction
+    context = {"form": form}
+    return render_template("user/profile.html", **context)
