@@ -8,6 +8,7 @@ Youtubeで投稿している"【Python】Flaskでつくる5ちゃんねる風掲
 git clone -b youtube-part1 https://github.com/suwa808/sixchan.git
 cd sixchan
 python3 -m venv .venv
+source .venv/bin/activate
 pip3 install -r requirements.txt
 python3 -c "from sixchan import db; db.create_all()"
 python3 -c "from sixchan import insert_mock_reses; insert_mock_reses()"
