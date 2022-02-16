@@ -9,6 +9,7 @@ Youtubeで投稿している"【Python】Flaskでつくる5ちゃんねる風掲
 git clone -b youtube-part2 https://github.com/suwa808/sixchan.git
 cd sixchan
 python3 -m venv .venv
+source .venv/bin/activate
 pip3 install -r requirements.txt
 make up
 make createtables
