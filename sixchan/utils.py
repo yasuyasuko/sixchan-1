@@ -58,7 +58,7 @@ def paginate(page: int, pages: int, delta: int = 2, with_edge_conidtion: bool = 
 
 def group_by(
     objs: list[T], key: str, as_list: Optional[bool] = False
-) -> Union[dict[Hashable, T], list[T]]:
+) -> Union[dict[Hashable, list[T]], list[list[T]]]:
     ids = set([getattr(obj, key) for obj in objs])
     if as_list:
         return [[obj for obj in objs if getattr(obj, key) == id_] for id_ in ids]
