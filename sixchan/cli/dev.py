@@ -1,12 +1,16 @@
+import uuid
 from graphlib import TopologicalSorter
 from importlib import import_module
 from pathlib import Path
 
 import click
 import yaml
+from faker import Faker
 from flask import Blueprint
 
 from sixchan.extensions import db
+from sixchan.models import Res
+from sixchan.models import Thread
 
 MOCKS_DIR = Path(__file__).parent / "mocks"
 dev = Blueprint("dev", __name__)
@@ -30,5 +34,37 @@ def insert_mockdata():
         records = [d for d in data_list if d["class"] == class_name][0]["records"]
         db.session.execute(class_.__table__.insert(), records)
         db.session.commit()
-
     click.secho("😀 Mockdata are inserted successfully.", fg="green")
+
+
+@dev.cli.group()
+def fake():
+    pass
+
+
+@fake.command()
+@click.option("-b", "--board_id", required=True, type=click.UUID)
+@click.option("-n", "--num", required=True, type=int)
+def thread(board_id, num):
+    faker = Faker("ja_JP")
+    threads = []
+    reses = []
+    for _ in range(num):
+        thread_id = uuid.uuid4()
+        threads.append(
+            {"id": thread_id, "name": faker.sentence(), "board_id": board_id}
+        )
+        reses.append(
+            {
+                "id": uuid.uuid4(),
+                "number": 1,
+                "who": "ThisIsFake123456789012",
+                "body": faker.text(),
+                "thread_id": thread_id,
+            }
+        )
+    db.session.execute(Thread.__table__.insert(), threads)
+    db.session.commit()
+    db.session.execute(Res.__table__.insert(), reses)
+    db.session.commit()
+    click.secho(f"😀 {num} fake threads are inserted successfully.", fg="green")
