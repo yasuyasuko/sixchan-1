@@ -7,6 +7,9 @@ up:
 down:
 	docker compose down
 
+postgres:
+	docker compose exec postgres bash
+
 createtables:
 	FLASK_APP=sixchan FLASK_ENV=development flask database create_tables
 
@@ -27,6 +30,6 @@ format:
 isort:
 	isort -sl .
 
-.PHONY: dev up down
+.PHONY: dev up down postgres
 .PHONY: createtables droptables insertmocks resetdb
 .PHONY: lint format isort
