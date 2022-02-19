@@ -102,8 +102,8 @@ Pagination
  TextLines
      raw: text.
  -->
-{% macro TextLines(raw) %}
-<p>
+{% macro TextLines(raw, id=None) %}
+<p {% if id %}id="{{ id }}" {% endif %}>
     {% for line in raw.split("\n") %}
     {{ line }}<br>
     {% endfor %}

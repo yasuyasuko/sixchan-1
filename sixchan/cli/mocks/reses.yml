@@ -50,6 +50,38 @@ records:
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
     - 00726573-4000-0000-a000-000000000006
+    number: 6
+    who: 9G+QaZLZbgp/1GObbyu5jA
+    body: ">>1\nぬるぽ?"
+    created_at: 2022-01-01 00:00:06.000
+    updated_at: 2022-01-01 00:00:06.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000007
+    number: 7
+    who: NXVwSdX/Y8DBaSetx2W9tg
+    body: ">>2\nぬるぽぽ"
+    created_at: 2022-01-01 00:00:07.000
+    updated_at: 2022-01-01 00:00:07.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000008
+    number: 8
+    who: xMpCOKC5I4INzFCab3WEmw
+    body: ">>6\nうん"
+    created_at: 2022-01-01 00:00:08.000
+    updated_at: 2022-01-01 00:00:08.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000009
+    number: 9
+    who: KBxREmffFm9h4+/UM7Wp8g
+    body: ">>1 >>2\nぬるぽおおお"
+    created_at: 2022-01-01 00:00:09.000
+    updated_at: 2022-01-01 00:00:09.000
+    <<: *testThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000010
     number: 1
     who: R7zlx09Yn0hn29V+nKn4CA
     body: わかるやついる？

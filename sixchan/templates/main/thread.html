@@ -7,6 +7,9 @@
 {% from "_component.html" import TextField %}
 {% from "_component.html" import TextAreaField %}
 {% from "_component.html" import SubmitButton %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/thread.js') }}" defer></script>
+{% endblock %}
 {% block title %}{{ thread.name }}{% endblock %}
 {% block content %}
 <!-- ThreadTittle -->
@@ -20,9 +23,9 @@
     <h1 class="text-xl font-bold">{{ thread.name }}</h1>
 </div>
 <!-- Reses -->
-<div>
+<div id="res-container">
     {% for res in reses %}
-    <div class="p-2 mt-2 bg-white rounded-lg">
+    <div id="{{ res.number }}" class="p-2 mt-2 bg-white rounded-lg">
         <p class="font-medium">
             {{ res.number }}
             {% if res.is_anonymous %}
@@ -33,7 +36,7 @@
             {{ Timeago(res.posted_at) }}
             {{ WhoShort(res.who) }}
         </p>
-        {{ TextLines(res.body) }}
+        {{ TextLines(res.body, "%d-%s" | format(res.number, "body")) }}
     </div>
     {% endfor %}
 </div>
