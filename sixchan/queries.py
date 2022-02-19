@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Generic
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
 @dataclass
-class PaginationQueryModel:
+class PaginationQueryModel(Generic[T]):
     page: int
     pages: int
-    items: list[Any]
+    items: list[T]
