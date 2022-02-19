@@ -28,9 +28,9 @@ user = Blueprint("user", __name__, url_prefix="/me")
 @user.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
-    change_username_form = ChangeUsernameForm()
-    change_email_form = ChangeEmailForm()
-    change_password_form = ChangePasswordForm()
+    change_username_form = ChangeUsernameForm(prefix="username")
+    change_email_form = ChangeEmailForm(prefix="email")
+    change_password_form = ChangePasswordForm(prefix="password")
 
     if change_username_form.validate_on_submit():
         current_user.username = change_username_form.username.data
