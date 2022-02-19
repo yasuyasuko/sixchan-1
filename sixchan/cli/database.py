@@ -1,9 +1,11 @@
+import click
 from flask import Blueprint
 from flask.cli import with_appcontext
 
 from sixchan.extensions import db
 
 database = Blueprint("database", __name__)
+database.cli.help = "Group of database operations."
 
 
 @database.cli.command("create_tables")
@@ -11,8 +13,8 @@ database = Blueprint("database", __name__)
 def create_tables():
     db.create_all()
     for table_name in db.metadata.tables.keys():
-        print(f"Table: {table_name}")
-    print("😀 The above tables are created successfully.")
+        click.echo(f"Table: {table_name}")
+    click.secho("😀 The above tables are created successfully.", fg="green")
 
 
 @database.cli.command("drop_tables")
@@ -20,5 +22,5 @@ def create_tables():
 def drop_tables():
     db.drop_all()
     for table_name in db.metadata.tables.keys():
-        print(f"Table: {table_name}")
-    print("😀 The above tables are dropped successfully.")
+        click.echo(f"Table: {table_name}")
+    click.secho("😀 The above tables are dropped successfully.", fg="green")

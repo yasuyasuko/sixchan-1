@@ -2,6 +2,7 @@ from graphlib import TopologicalSorter
 from importlib import import_module
 from pathlib import Path
 
+import click
 import yaml
 from flask import Blueprint
 
@@ -9,6 +10,7 @@ from sixchan.extensions import db
 
 MOCKS_DIR = Path(__file__).parent / "mocks"
 dev = Blueprint("dev", __name__)
+dev.cli.help = "Group of development tools."
 
 
 def _load_yaml(path: Path):
@@ -29,4 +31,4 @@ def insert_mockdata():
         db.session.execute(class_.__table__.insert(), records)
         db.session.commit()
 
-    print("😀 Mockdata are inserted successfully.")
+    click.secho("😀 Mockdata are inserted successfully.", fg="green")
