@@ -12,7 +12,7 @@ from sixchan.models import Res
 from sixchan.models import Thread
 from sixchan.models import UserAccount
 from sixchan.models import UserProfile
-from sixchan.queries import PaginationQueryModel
+from sixchan.utils import Pagination
 
 
 class ThreadOverviewRow(NamedTuple):
@@ -84,22 +84,13 @@ class UserQueryModel:
 
 
 def get_threads_pagination(board_id: UUID, page: int, per_page: int):
-    if page < 1 or not isinstance(page, int):
-        raise ValueError(
-            f"page must be integer greater than or equal to 1, page:{page}"
-        )
-    if per_page < 1 or not isinstance(per_page, int):
-        raise ValueError(
-            f"per_page must be integer greater than or equal to 1, per_page:{per_page}"
-        )
+    pagination = Pagination(page, per_page)
 
     total = Thread.query.filter_by(board_id=board_id).count()
     if total <= 0:
-        return PaginationQueryModel(1, 1, [])
-
-    pages = total // per_page + 1
-    limit = per_page
-    offset = per_page * (page - 1)
+        return pagination.get_empty_query_model()
+    else:
+        pagination.total = total
 
     subquery = (
         Res.query.with_entities(
@@ -120,12 +111,12 @@ def get_threads_pagination(board_id: UUID, page: int, per_page: int):
         .filter_by(board_id=board_id)
         .join(subquery, Thread.id == subquery.c.thread_id)
         .order_by(subquery.c.last_created_at.desc())
-        .limit(limit)
-        .offset(offset)
+        .limit(pagination.limit)
+        .offset(pagination.offset)
     )
 
     items = [ThreadOverviewQueryModel.from_row(row) for row in query.all()]
-    return PaginationQueryModel(page, pages, items)
+    return pagination.get_query_model(items)
 
 
 def get_reses(thread_id: UUID) -> list[ResQueryModel]:

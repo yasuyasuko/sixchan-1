@@ -1,8 +1,8 @@
-from random import randint
 import uuid
 from graphlib import TopologicalSorter
 from importlib import import_module
 from pathlib import Path
+from random import randint
 
 import click
 import yaml

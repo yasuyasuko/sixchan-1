@@ -1,6 +1,8 @@
 import base64
 import hashlib
 from collections import deque
+from dataclasses import dataclass
+from typing import Generic
 from typing import Hashable
 from typing import Optional
 from typing import TypeVar
@@ -63,3 +65,46 @@ def group_by(
     if as_list:
         return [[obj for obj in objs if getattr(obj, key) == id_] for id_ in ids]
     return {id_: [obj for obj in objs if getattr(obj, key) == id_] for id_ in ids}
+
+
+class Pagination:
+    @dataclass
+    class PaginationQueryModel(Generic[T]):
+        page: int
+        pages: int
+        items: list[T]
+
+    def __init__(self, page: int, per_page: int, total: int = None) -> None:
+        self.page = page
+        self.per_page = per_page
+        self.total = total
+        self.validate()
+
+    def validate(self) -> None:
+        if self.page < 1 or not isinstance(self.page, int):
+            msg = f"page must be integer greater than or equal to 1, page:{self.page}"
+            raise ValueError(msg)
+        if self.per_page < 1 or not isinstance(self.per_page, int):
+            msg = (
+                "per_page must be integer greater than or equal to 1, "
+                f"per_page:{self.per_page}"
+            )
+            raise ValueError(msg)
+
+    @property
+    def pages(self) -> int:
+        return self.total // self.per_page + 1
+
+    @property
+    def limit(self) -> int:
+        return self.per_page
+
+    @property
+    def offset(self) -> int:
+        return self.per_page * (self.page - 1)
+
+    def get_query_model(self, items: list[T]) -> PaginationQueryModel[T]:
+        return self.PaginationQueryModel(self.page, self.pages, items)
+
+    def get_empty_query_model(self) -> PaginationQueryModel[None]:
+        return self.PaginationQueryModel(1, 1, [])
