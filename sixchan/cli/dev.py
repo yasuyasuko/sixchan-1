@@ -1,3 +1,4 @@
+from random import randint
 import uuid
 from graphlib import TopologicalSorter
 from importlib import import_module
@@ -54,15 +55,16 @@ def thread(board_id, num):
         threads.append(
             {"id": thread_id, "name": faker.sentence(), "board_id": board_id}
         )
-        reses.append(
-            {
-                "id": uuid.uuid4(),
-                "number": 1,
-                "who": "ThisIsFake123456789012",
-                "body": faker.text(),
-                "thread_id": thread_id,
-            }
-        )
+        for n in range(1, randint(2, 1001)):
+            reses.append(
+                {
+                    "id": uuid.uuid4(),
+                    "number": n,
+                    "who": "ThisIsFake123456789012",
+                    "body": faker.text(),
+                    "thread_id": thread_id,
+                }
+            )
     db.session.execute(Thread.__table__.insert(), threads)
     db.session.commit()
     db.session.execute(Res.__table__.insert(), reses)
