@@ -1,5 +1,5 @@
-import base64
 import hashlib
+import uuid
 from collections import deque
 from dataclasses import dataclass
 from typing import Generic
@@ -8,12 +8,14 @@ from typing import Optional
 from typing import TypeVar
 from typing import Union
 
+import shortuuid
+
 T = TypeVar("T")
 
 
-def get_b64encoded_digest_string_from_words(*words: list[str]) -> str:
+def get_hash_from_words(*words: list[str]) -> str:
     digest = hashlib.md5("".join(words).encode()).digest()
-    return base64.b64encode(digest).decode().strip("=")
+    return shortuuid.encode(uuid.UUID(bytes=digest))
 
 
 def paginate(page: int, pages: int, delta: int = 2, with_edge_conidtion: bool = False):

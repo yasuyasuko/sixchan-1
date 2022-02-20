@@ -26,7 +26,7 @@ from sixchan.config import EMAIL_MAX_LENGTH
 from sixchan.config import THREAD_NAME_MAX_LENGTH
 from sixchan.config import USERNAME_MAX_LENGTH
 from sixchan.extensions import db
-from sixchan.utils import get_b64encoded_digest_string_from_words
+from sixchan.utils import get_hash_from_words
 
 
 class UUID(TypeDecorator):
@@ -236,7 +236,7 @@ class Thread(UUIDMixin, TimestampMixin, db.Model):
         new_res = Res(
             id=new_res_id,
             number=self.next_res_number,
-            who=get_b64encoded_digest_string_from_words(*who_seeds),
+            who=get_hash_from_words(*who_seeds),
             body=body,
         )
         self.reses.append(new_res)
