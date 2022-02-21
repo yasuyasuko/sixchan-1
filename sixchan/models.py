@@ -17,7 +17,7 @@ from sqlalchemy.types import TypeEngine
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from sixchan.config import ANON_NAME_MAX_LENGTH
+from sixchan.config import ANON_NAME_MAX_LENGTH, MAX_RESES_PER_THREAD
 from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
 from sixchan.config import BOARD_NAME_MAX_LENGTH
 from sixchan.config import DISPLAY_NAME_MAX_LENGTH
@@ -231,6 +231,9 @@ class Thread(UUIDMixin, TimestampMixin, db.Model):
     def post_res(
         self, body: str, who_seeds: list[str], user: Union[UserAccount, AnonymousUser]
     ):
+        if self.next_res_number > MAX_RESES_PER_THREAD:
+            raise RuntimeError("This thread reaches limit.")
+
         new_res_id = uuid.uuid4()
         new_res = Res(
             id=new_res_id,
