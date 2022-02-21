@@ -1,4 +1,3 @@
-import json
 import secrets
 import uuid
 from datetime import datetime
@@ -275,52 +274,3 @@ class BoardCategory(UUIDMixin, TimestampMixin, db.Model):
         db.String(BOARD_CATEGORY_NAME_MAX_LENGTH), unique=True, nullable=False
     )
     boards = db.relationship("Board", backref="board_category")
-
-
-def insert_mockdata():
-    with open("mockdata.json", encoding="utf-8") as f:
-        mock_data = json.load(f)
-
-    for category in mock_data["board_categories"]:
-        id = uuid.UUID(category.pop("id"))
-        created_at = datetime.fromisoformat(category.pop("created_at"))
-        db.session.add(BoardCategory(id=id, created_at=created_at, **category))
-
-    for board in mock_data["boards"]:
-        id = uuid.UUID(board.pop("id"))
-        created_at = datetime.fromisoformat(board.pop("created_at"))
-        category_id = uuid.UUID(board.pop("category_id"))
-        db.session.add(
-            Board(id=id, created_at=created_at, category_id=category_id, **board)
-        )
-
-    for thread in mock_data["threads"]:
-        id = uuid.UUID(thread.pop("id"))
-        created_at = datetime.fromisoformat(thread.pop("created_at"))
-        board_id = uuid.UUID(thread.pop("board_id"))
-        db.session.add(
-            Thread(id=id, created_at=created_at, board_id=board_id, **thread)
-        )
-
-    for res in mock_data["reses"]:
-        id = uuid.UUID(res.pop("id"))
-        created_at = datetime.fromisoformat(res.pop("created_at"))
-        thread_id = uuid.UUID(res.pop("thread_id"))
-        db.session.add(Res(id=id, created_at=created_at, thread_id=thread_id, **res))
-
-    for user in mock_data["users"]:
-        id = uuid.UUID(user.pop("id"))
-        created_at = datetime.fromisoformat(user.pop("created_at"))
-        updated_at = datetime.fromisoformat(user.pop("updated_at"))
-        password_hash = generate_password_hash(user.pop("password"))
-        db.session.add(
-            UserAccount(
-                id=id,
-                created_at=created_at,
-                updated_at=updated_at,
-                password_hash=password_hash,
-                **user,
-            )
-        )
-
-    db.session.commit()
