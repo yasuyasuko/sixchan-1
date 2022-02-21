@@ -42,6 +42,7 @@
 </div>
 <!-- Form -->
 <div class="mt-4">
+    {% if can_post %}
     <p class="text-lg font-bold">レスを投稿する</p>
     <form action="" , method="POST" id="res-form">
         {{ form.csrf_token }}
@@ -54,5 +55,8 @@
             {{ SubmitButton("書き込む", "res-form") }}
         </div>
     </form>
+    {% else %}
+    <p class="text-lg font-bold">このスレッドは1000件に到達したため、書き込みできません</p>
+    {% endif %}
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@ from flask import url_for
 from flask_login import current_user
 from sqlalchemy.orm import joinedload
 
-from sixchan.config import THREADS_PER_PAGE
+from sixchan.config import MAX_RESES_PER_THREAD, THREADS_PER_PAGE
 from sixchan.extensions import db
 from sixchan.main import queries
 from sixchan.main.forms import AnonymousResForm
@@ -80,6 +80,7 @@ def thread(thread_id: str):
 
     thread = Thread.query.get_or_404(thread_uuid)
     reses = queries.get_reses(thread.id)
+    can_post = len(reses) < MAX_RESES_PER_THREAD
 
     form = OnymousResForm() if current_user.is_authenticated else AnonymousResForm()
     if form.validate_on_submit():
@@ -97,6 +98,7 @@ def thread(thread_id: str):
     context = {
         "thread": thread,
         "reses": reses,
+        "can_post": can_post,
         "form": form,
         "anchor": "res-form" if form.is_submitted() else None,
     }
