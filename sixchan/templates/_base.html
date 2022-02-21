@@ -1,3 +1,4 @@
+{% from "_component.html" import Header %}
 <html lang="ja">
 
 <head>
@@ -8,31 +9,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{ url_for('static', filename='js/toast.min.js') }}"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="{{ url_for('static', filename='js/base.js') }}" defer></script>
     {% block script %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body class="flex flex-col min-h-full bg-gray-100">
     <!-- Header -->
-    <nav class="px-6 py-2 bg-white shadow">
-        <div class="flex items-center max-w-screen-lg mx-auto">
-            <a href="{{ url_for('main.index') }}" class="flex-auto">
-                <img class="h-8" src="{{ url_for('static', filename='img/sixchan-logo.png') }}"
-                    alt="6channel site logo" />
-            </a>
-            <div>
-                <a href="{{ url_for('main.index') }}" class="mx-2 hover:text-blue-500">板一覧</a>
-                <a href="{{ url_for('main.index') }}" class="mx-2 hover:text-blue-500">ガイドライン</a>
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('user.account') }}" class="mx-2 hover:text-blue-500">マイページ</a>
-                <a href="{{ url_for('auth.logout') }}" class="mx-2 hover:text-blue-500">ログアウト</a>
-                {% else %}
-                <a href="{{ url_for('auth.login') }}" class="mx-2 hover:text-blue-500">ログイン</a>
-                <a href="{{ url_for('auth.signup') }}" class="mx-2 hover:text-blue-500">新規登録</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
+    {{ Header(current_user.is_authenticated) }}
     <!-- Main -->
     <main class="w-full max-w-screen-lg p-2 mx-auto mb-auto text-gray-600">
         {% block content %}{% endblock %}
@@ -49,22 +34,20 @@
     </footer>
     <!-- if specifies scroll position -->
     {% if anchor %}
-    <script>
-        document.location.hash = '#{{ anchor }}'
-    </script>
+    <input id="scroll-anchor" type="hidden" name="anchor" value="{{ anchor }}">
     {% endif %}
     <!-- if exists flash message -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    {% for level, message in messages %}
-    {% set background = get_flash_color(level)%}
-    <script type="text/javascript">
-        const options = {
-            style: { main: { background: "{{ background }}" } }
-        }
-        iqwerty.toast.toast("{{ message }}", options)
-    </script>
-    {% endfor %}
+    <div id="flash-messages" hidden>
+        {% for level, message in messages %}
+        {% set background = get_flash_color(level)%}
+        <div>
+            <input type="hidden" name="message" value="{{ message }}">
+            <input type="hidden" name="background" value="{{ background }}">
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
     {% endwith %}
 </body>
