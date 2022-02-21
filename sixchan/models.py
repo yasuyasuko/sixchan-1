@@ -17,11 +17,12 @@ from sqlalchemy.types import TypeEngine
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from sixchan.config import ANON_NAME_MAX_LENGTH, MAX_RESES_PER_THREAD
+from sixchan.config import ANON_NAME_MAX_LENGTH
 from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
 from sixchan.config import BOARD_NAME_MAX_LENGTH
 from sixchan.config import DISPLAY_NAME_MAX_LENGTH
 from sixchan.config import EMAIL_MAX_LENGTH
+from sixchan.config import MAX_RESES_PER_THREAD
 from sixchan.config import THREAD_NAME_MAX_LENGTH
 from sixchan.config import USERNAME_MAX_LENGTH
 from sixchan.extensions import db
@@ -180,6 +181,38 @@ class UserProfile(TimestampMixin, db.Model):
     reses = db.relationship(
         "Res", backref=db.backref("author", uselist=False), secondary="onymous_authors"
     )
+
+    def favorite(self, thread) -> None:
+        if self.is_favorite(thread):
+            return
+        db.session.add(Favorite(account_id=self.account_id, thread_id=thread.id))
+
+    def unfavorite(self, thread):
+        if not self.is_favorite(thread):
+            return
+        existed = Favorite.query.filter_by(
+            account_id=self.account_id, thread_id=thread.id
+        ).first()
+        db.session.delete(existed)
+
+    def is_favorite(self, thread) -> bool:
+        existed = Favorite.query.filter_by(
+            account_id=self.account_id, thread_id=thread.id
+        ).first()
+        return bool(existed)
+
+    def toggle_favorite(self, thread) -> None:
+        if self.is_favorite(thread):
+            self.unfavorite(thread)
+        else:
+            self.favorite(thread)
+
+
+class Favorite(db.Model):
+    __tablename__ = "favorites"
+    account_id = db.Column(UUID(), db.ForeignKey("user_accounts.id"), primary_key=True)
+    thread_id = db.Column(UUID(), db.ForeignKey("threads.id"), primary_key=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
 class AnonymousAuthor(db.Model):

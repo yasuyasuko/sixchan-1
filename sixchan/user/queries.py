@@ -7,6 +7,7 @@ from sqlalchemy import desc
 from sqlalchemy import func
 
 from sixchan.models import Board
+from sixchan.models import Favorite
 from sixchan.models import OnymousAuthor
 from sixchan.models import Res
 from sixchan.models import Thread
@@ -64,6 +65,33 @@ class UserThreadQueryModel:
         )
 
 
+class FavoriteThreadRow(NamedTuple):
+    id: uuid.UUID
+    name: str
+    reses_count: int
+    last_created_at: datetime
+    created_at: datetime
+
+
+@dataclass
+class FavoriteThreadQueryModel:
+    id: uuid.UUID
+    name: str
+    reses_count: int
+    last_posted_at: datetime
+    favorited_at: datetime
+
+    @classmethod
+    def from_row(cls, row: FavoriteThreadRow) -> "FavoriteThreadQueryModel":
+        return cls(
+            id=row.id,
+            name=row.name,
+            reses_count=row.reses_count,
+            last_posted_at=row.last_created_at,
+            favorited_at=row.created_at,
+        )
+
+
 def get_threads_pagination(user: UserAccount, page: int, per_page: int):
     pagination = Pagination(page, per_page)
 
@@ -111,4 +139,43 @@ def get_threads_pagination(user: UserAccount, page: int, per_page: int):
         for rows in group_by(query.all(), "thread_id", as_list=True)
     ]
 
+    return pagination.get_query_model(items)
+
+
+def get_favorite_threads_pagination(user: UserAccount, page: int, per_page: int):
+    pagination = Pagination(page, per_page)
+
+    total = Thread.query.where(
+        Thread.id == Favorite.thread_id, user.id == Favorite.account_id
+    ).count()
+    if total <= 0:
+        return pagination.get_empty_query_model()
+    else:
+        pagination.total = total
+
+    subquery = (
+        Res.query.with_entities(
+            Res.thread_id,
+            func.count(Res.id).label("reses_count"),
+            func.max(Res.created_at).label("last_created_at"),
+        )
+        .group_by(Res.thread_id)
+        .subquery("reses")
+    )
+    query = (
+        Thread.query.with_entities(
+            Thread.id,
+            Thread.name,
+            subquery.c.reses_count,
+            subquery.c.last_created_at,
+            Favorite.created_at,
+        )
+        .where(Thread.id == Favorite.thread_id, user.id == Favorite.account_id)
+        .join(subquery, Thread.id == subquery.c.thread_id)
+        .order_by(Favorite.created_at.desc())
+        .limit(pagination.limit)
+        .offset(pagination.offset)
+    )
+
+    items = [FavoriteThreadQueryModel.from_row(row) for row in query.all()]
     return pagination.get_query_model(items)

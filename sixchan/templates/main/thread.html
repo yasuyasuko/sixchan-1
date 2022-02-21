@@ -21,6 +21,20 @@
         </div>
     </div>
     <h1 class="text-xl font-bold">{{ thread.name }}</h1>
+    {% if current_user.is_authenticated %}
+    <form action="" method="POST" class="">
+        {{ favorite_form.csrf_token }}
+        <button type="submit" class="flex items-end hover:text-gray-400 text-gray-500">
+            {% if current_user.profile.is_favorite(thread) %}
+            <span class="material-icons text-pink-500">favorite</span>
+            <span class="text-sm">お気に入りを解除</span>
+            {% else %}
+            <span class="material-icons">favorite</span>
+            <span class="text-sm">お気に入りに追加</span>
+            {% endif %}
+        </button>
+    </form>
+    {% endif %}
 </div>
 <!-- Reses -->
 <div id="res-container">
@@ -45,12 +59,12 @@
     {% if can_post %}
     <p class="text-lg font-bold">レスを投稿する</p>
     <form action="" , method="POST" id="res-form">
-        {{ form.csrf_token }}
+        {{ res_form.csrf_token }}
         {% if not current_user.is_authenticated %}
-        {{ TextField(form.anon_name)}}
-        {{ TextField(form.anon_email)}}
+        {{ TextField(res_form.anon_name)}}
+        {{ TextField(res_form.anon_email)}}
         {% endif %}
-        {{ TextAreaField(form.body)}}
+        {{ TextAreaField(res_form.body)}}
         <div class="mt-2 text-center">
             {{ SubmitButton("書き込む", "res-form") }}
         </div>

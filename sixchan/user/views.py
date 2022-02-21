@@ -12,6 +12,7 @@ from flask_login import login_required
 from sixchan.config import FLASH_LEVEL as LEVEL
 from sixchan.config import FLASH_MESSAGE as MSG
 from sixchan.config import THREADS_HISTORY_PER_PAGE
+from sixchan.config import THREADS_PER_PAGE
 from sixchan.email import send_email
 from sixchan.extensions import db
 from sixchan.models import ChangeEmailConfiramtionToken
@@ -121,3 +122,14 @@ def history():
     )
     context = {"pagination": pagination}
     return render_template("user/history.html", **context)
+
+
+@user.get("/favorite")
+@login_required
+def favorite():
+    page = request.args.get("page", default=1, type=int)
+    pagination = queries.get_favorite_threads_pagination(
+        current_user, page, THREADS_PER_PAGE
+    )
+    context = {"pagination": pagination}
+    return render_template("user/favorite.html", **context)

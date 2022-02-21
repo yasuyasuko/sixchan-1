@@ -33,6 +33,10 @@ class OnymousResForm(FlaskForm):
     )
 
 
+class FavoriteForm(FlaskForm):
+    pass
+
+
 class AnonymousThreadForm(FlaskForm):
     thread_name = StringField(
         "スレッド名",

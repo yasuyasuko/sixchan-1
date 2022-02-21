@@ -28,7 +28,7 @@ format:
 	black .
 
 isort:
-	isort -sl .
+	isort --force-single-line-imports .
 
 .PHONY: dev up down postgres
 .PHONY: createtables droptables insertmocks resetdb

@@ -9,11 +9,13 @@ from flask import url_for
 from flask_login import current_user
 from sqlalchemy.orm import joinedload
 
-from sixchan.config import MAX_RESES_PER_THREAD, THREADS_PER_PAGE
+from sixchan.config import MAX_RESES_PER_THREAD
+from sixchan.config import THREADS_PER_PAGE
 from sixchan.extensions import db
 from sixchan.main import queries
 from sixchan.main.forms import AnonymousResForm
 from sixchan.main.forms import AnonymousThreadForm
+from sixchan.main.forms import FavoriteForm
 from sixchan.main.forms import OnymousResForm
 from sixchan.main.forms import OnymousThreadForm
 from sixchan.main.utils import normalize_uuid_string
@@ -82,25 +84,32 @@ def thread(thread_id: str):
     reses = queries.get_reses(thread.id)
     can_post = len(reses) < MAX_RESES_PER_THREAD
 
-    form = OnymousResForm() if current_user.is_authenticated else AnonymousResForm()
-    if form.validate_on_submit():
+    res_form = OnymousResForm() if current_user.is_authenticated else AnonymousResForm()
+    favorite_form = FavoriteForm(prefix="favorite")
+    if res_form.validate_on_submit():
         if isinstance(current_user, AnonymousUser):
-            current_user.name = form.anon_name.data
-            current_user.email = form.anon_email.data
+            current_user.name = res_form.anon_name.data
+            current_user.email = res_form.anon_email.data
         ip = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
         today_utc = datetime.utcnow().strftime("%Y%m%d")
         thread.post_res(
-            body=form.body.data, who_seeds=[ip, today_utc], user=current_user
+            body=res_form.body.data, who_seeds=[ip, today_utc], user=current_user
         )
         db.session.commit()
         return redirect(url_for(".thread", thread_id=thread_id, _anchor="res-form"))
+
+    if favorite_form.validate_on_submit():
+        current_user.profile.toggle_favorite(thread)
+        db.session.commit()
+        return redirect(url_for(".thread", thread_id=thread_id))
 
     context = {
         "thread": thread,
         "reses": reses,
         "can_post": can_post,
-        "form": form,
-        "anchor": "res-form" if form.is_submitted() else None,
+        "res_form": res_form,
+        "favorite_form": favorite_form,
+        "anchor": "res-form" if res_form.is_submitted() else None,
     }
     return render_template("main/thread.html", **context)
 
