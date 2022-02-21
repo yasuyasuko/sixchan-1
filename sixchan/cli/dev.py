@@ -70,3 +70,26 @@ def thread(board_id, num):
     db.session.execute(Res.__table__.insert(), reses)
     db.session.commit()
     click.secho(f"😀 {num} fake threads are inserted successfully.", fg="green")
+
+
+@fake.command()
+@click.option("-t", "--thread_id", required=True, type=click.UUID)
+@click.option("-n", "--num", required=True, type=int)
+def res(thread_id, num):
+    faker = Faker("ja_JP")
+    thread = Thread.query.get(thread_id)
+    current_number = thread.reses_count
+    reses = []
+    for n in range(1, num + 1):
+        reses.append(
+            {
+                "id": uuid.uuid4(),
+                "number": current_number + n,
+                "who": "ThisIsFake123456789012",
+                "body": faker.text(),
+                "thread_id": thread_id,
+            }
+        )
+    db.session.execute(Res.__table__.insert(), reses)
+    db.session.commit()
+    click.secho(f"😀 {num} fake reses are inserted successfully.", fg="green")
