@@ -190,6 +190,9 @@ Pagination
             <a href="{{ url_for('main.index') }}" class="mx-2 hover:text-blue-500">ガイドライン</a>
             {% if logined %}
             <a href="{{ url_for('user.account') }}" class="mx-2 hover:text-blue-500">マイページ</a>
+            {% if role in ('moderator', 'administrator') %}
+            <a href="{{ url_for('admin.report') }}" class="mx-2 hover:text-blue-500">管理者用</a>
+            {% endif %}
             <a href="{{ url_for('auth.logout') }}" class="mx-2 hover:text-blue-500">ログアウト</a>
             {% else %}
             <a href="{{ url_for('auth.login') }}" class="mx-2 hover:text-blue-500">ログイン</a>

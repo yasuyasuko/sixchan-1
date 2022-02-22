@@ -18,18 +18,16 @@ from sqlalchemy.types import TypeEngine
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from sixchan.config import (
-    ANON_NAME_MAX_LENGTH,
-    REPORT_REASON_NAME_MAX_LENGTH,
-    REPORT_REASON_TEXT_MAX_LENGTH,
-    REPORT_STATUS_CLOSE,
-    REPORT_STATUS_OPEN,
-)
+from sixchan.config import ANON_NAME_MAX_LENGTH
 from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
 from sixchan.config import BOARD_NAME_MAX_LENGTH
 from sixchan.config import DISPLAY_NAME_MAX_LENGTH
 from sixchan.config import EMAIL_MAX_LENGTH
 from sixchan.config import MAX_RESES_PER_THREAD
+from sixchan.config import REPORT_REASON_NAME_MAX_LENGTH
+from sixchan.config import REPORT_REASON_TEXT_MAX_LENGTH
+from sixchan.config import REPORT_STATUS_CLOSE
+from sixchan.config import REPORT_STATUS_OPEN
 from sixchan.config import ROLE_ADMINISTRATOR
 from sixchan.config import ROLE_GENERAL
 from sixchan.config import ROLE_MODERATOR
