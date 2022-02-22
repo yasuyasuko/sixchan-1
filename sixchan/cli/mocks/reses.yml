@@ -13,6 +13,7 @@ records:
     number: 1
     who: xMpCOKC5I4INzFCab3WEmw
     body: ぬるぽ
+    inappropriate: false
     created_at: 2022-01-01 00:00:01.000
     updated_at: 2022-01-01 00:00:01.000
     <<: *testThreadDefaults
@@ -21,6 +22,7 @@ records:
     number: 2
     who: yB5yjZ1ML2NvBn+JzBSGLA
     body: ぬるぽぽ
+    inappropriate: false
     created_at: 2022-01-01 00:00:02.000
     updated_at: 2022-01-01 00:00:02.000
     <<: *testThreadDefaults
@@ -29,6 +31,7 @@ records:
     number: 3
     who: 7MvIfktc4v4oMI/Z8qe68w
     body: ぬるぽぽぽ
+    inappropriate: false
     created_at: 2022-01-01 00:00:03.000
     updated_at: 2022-01-01 00:00:03.000
     <<: *testThreadDefaults
@@ -37,6 +40,7 @@ records:
     number: 4
     who: qH/2eaLz5x2RgaZ7dUISLA
     body: ぬるぽぽぽぽ
+    inappropriate: false
     created_at: 2022-01-01 00:00:04.000
     updated_at: 2022-01-01 00:00:04.000
     <<: *testThreadDefaults
@@ -45,6 +49,7 @@ records:
     number: 5
     who: R7zlx09Yn0hn29V+nKn4CA
     body: 登録ユーザぬるぽ
+    inappropriate: false
     created_at: 2022-01-01 00:00:05.000
     updated_at: 2022-01-01 00:00:05.000
     <<: *testThreadDefaults
@@ -53,6 +58,7 @@ records:
     number: 6
     who: 9G+QaZLZbgp/1GObbyu5jA
     body: ">>1\nぬるぽ?"
+    inappropriate: false
     created_at: 2022-01-01 00:00:06.000
     updated_at: 2022-01-01 00:00:06.000
     <<: *testThreadDefaults
@@ -61,6 +67,7 @@ records:
     number: 7
     who: NXVwSdX/Y8DBaSetx2W9tg
     body: ">>2\nぬるぽぽ"
+    inappropriate: false
     created_at: 2022-01-01 00:00:07.000
     updated_at: 2022-01-01 00:00:07.000
     <<: *testThreadDefaults
@@ -69,6 +76,7 @@ records:
     number: 8
     who: xMpCOKC5I4INzFCab3WEmw
     body: ">>6\nうん"
+    inappropriate: false
     created_at: 2022-01-01 00:00:08.000
     updated_at: 2022-01-01 00:00:08.000
     <<: *testThreadDefaults
@@ -77,6 +85,7 @@ records:
     number: 9
     who: KBxREmffFm9h4+/UM7Wp8g
     body: ">>1 >>2\nぬるぽおおお"
+    inappropriate: false
     created_at: 2022-01-01 00:00:09.000
     updated_at: 2022-01-01 00:00:09.000
     <<: *testThreadDefaults
@@ -85,14 +94,25 @@ records:
     number: 1
     who: R7zlx09Yn0hn29V+nKn4CA
     body: わかるやついる？
+    inappropriate: false
     created_at: 1912-11-24 00:07:32.821
     updated_at: 1912-11-24 00:07:32.821
     <<: *gregorThreadDefaults
   - id: !!python/object/apply:uuid.UUID
     - 00726573-4000-0000-a000-000000000011
-    number: 1
-    who: R7zlx09Yn0hn29V+nKn4CA
-    body: うちの妹が気持ち悪がってるんだが、しばいていい？
+    number: 2
+    who: KBxREmffFm9h4+/UM7Wp8g
+    body: とっても不適切な内容
+    inappropriate: true
     created_at: 1912-11-24 00:07:49.252
     updated_at: 1912-11-24 00:07:49.252
+    <<: *gregorThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000012
+    number: 3
+    who: R7zlx09Yn0hn29V+nKn4CA
+    body: うちの妹が気持ち悪がってるんだが、しばいていい？
+    inappropriate: false
+    created_at: 1912-11-24 00:07:55.123
+    updated_at: 1912-11-24 00:07:55.123
     <<: *gregorThreadDefaults

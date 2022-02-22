@@ -22,6 +22,8 @@ from sixchan.config import (
     ANON_NAME_MAX_LENGTH,
     REPORT_REASON_NAME_MAX_LENGTH,
     REPORT_REASON_TEXT_MAX_LENGTH,
+    REPORT_STATUS_CLOSE,
+    REPORT_STATUS_OPEN,
 )
 from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
 from sixchan.config import BOARD_NAME_MAX_LENGTH
@@ -250,6 +252,7 @@ class Res(UUIDMixin, TimestampMixin, db.Model):
     number = db.Column(db.Integer, nullable=False)
     who = db.Column(db.String(22), nullable=False)
     body = db.Column(db.Text, nullable=False)
+    inappropriate = db.Column(db.Boolean, default=False, nullable=False)
     thread_id = db.Column(UUID(), db.ForeignKey("threads.id"), nullable=False)
 
 
@@ -325,6 +328,11 @@ class ReportReason(db.Model):
     text = db.Column(db.String(REPORT_REASON_TEXT_MAX_LENGTH), nullable=False)
 
 
+class ReportStatus(str, Enum):
+    OPEN = REPORT_STATUS_OPEN
+    CLOSE = REPORT_STATUS_CLOSE
+
+
 class Report(UUIDMixin, TimestampMixin, db.Model):
     __tablename__ = "reports"
     reason_name = db.Column(
@@ -333,6 +341,8 @@ class Report(UUIDMixin, TimestampMixin, db.Model):
         nullable=False,
     )
     detail = db.Column(db.Text, default="", nullable=False)
+    status = db.Column(db.Enum(ReportStatus), default=ReportStatus.OPEN, nullable=False)
+    res_id = db.Column(UUID(), db.ForeignKey("reses.id"), nullable=True)
     reported_by = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=True)
 
 

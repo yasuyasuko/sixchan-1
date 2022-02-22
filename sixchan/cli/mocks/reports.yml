@@ -2,11 +2,15 @@ class: Report
 depends:
   - UserAccount
   - ReportReason
+  - Res
 records:
   - id: !!python/object/apply:uuid.UUID
     - 7265706f-4000-0000-a000-000000000001
     reason_name: violent
     detail: 個人に対する脅迫じみた内容を投稿している
+    status: open
+    res_id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000012
     reported_by: !!python/object/apply:uuid.UUID
     - 75736572-4000-0000-a000-000000000002
     created_at: 1912-11-24 00:08:23.763

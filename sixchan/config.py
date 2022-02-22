@@ -24,6 +24,9 @@ ROLE_GENERAL = "general"
 ROLE_MODERATOR = "moderator"
 ROLE_ADMINISTRATOR = "administrator"
 
+REPORT_STATUS_OPEN = "open"
+REPORT_STATUS_CLOSE = "close"
+
 
 class FLASH_LEVEL:
     INFO = "info"
