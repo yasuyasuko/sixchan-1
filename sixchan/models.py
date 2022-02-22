@@ -6,7 +6,6 @@ from enum import Enum
 from typing import Any
 from typing import Optional
 from typing import Text
-from typing import Union
 
 from flask_login import AnonymousUserMixin
 from flask_login import UserMixin
@@ -278,7 +277,7 @@ class Thread(UUIDMixin, TimestampMixin, db.Model):
         return last_res.created_at
 
     def post_res(
-        self, body: str, who_seeds: list[str], user: Union[UserAccount, AnonymousUser]
+        self, body: str, who_seeds: list[str], user: UserAccount | AnonymousUser
     ):
         if self.next_res_number > MAX_RESES_PER_THREAD:
             raise RuntimeError("This thread reaches limit.")
