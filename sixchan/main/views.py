@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from flask import Blueprint, flash
+from flask import Blueprint
 from flask import abort
+from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -9,21 +10,24 @@ from flask import url_for
 from flask_login import current_user
 from sqlalchemy.orm import joinedload
 
+from sixchan.config import FLASH_LEVEL as LEVEL
+from sixchan.config import FLASH_MESSAGE as MSG
 from sixchan.config import MAX_RESES_PER_THREAD
 from sixchan.config import THREADS_PER_PAGE
-from sixchan.config import FLASH_MESSAGE as MSG
-from sixchan.config import FLASH_LEVEL as LEVEL
 from sixchan.extensions import db
 from sixchan.main import queries
-from sixchan.main.forms import AnonymousResForm, ReportForm
+from sixchan.main.forms import AnonymousResForm
 from sixchan.main.forms import AnonymousThreadForm
 from sixchan.main.forms import FavoriteForm
 from sixchan.main.forms import OnymousResForm
 from sixchan.main.forms import OnymousThreadForm
+from sixchan.main.forms import ReportForm
 from sixchan.main.utils import normalize_uuid_string
-from sixchan.models import AnonymousUser, Report, ReportReason
+from sixchan.models import AnonymousUser
 from sixchan.models import Board
 from sixchan.models import BoardCategory
+from sixchan.models import Report
+from sixchan.models import ReportReason
 from sixchan.models import Thread
 
 main = Blueprint("main", __name__)
@@ -148,6 +152,7 @@ def report(res_id):
             reported_by=reporter,
         )
         db.session.add(report)
+        db.session.commit()
         flash(MSG.REPORT_ACCEPTED, LEVEL.SUCCESS)
         return redirect(request.url)
     context = {"res": res, "form": form}

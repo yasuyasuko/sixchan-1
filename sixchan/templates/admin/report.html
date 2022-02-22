@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+{% from "_component.html" import Pagination %}
+{% from "admin/_component.html" import SidePanel %}
+{% block title %}{{ current_user.username }}{% endblock %}
+{% block content %}
+<div>
+    <h1 class="p-2 text-xl font-bold">@{{ current_user.username }}で処罰</h1>
+    <div class="text-gray-600 sm:flex">
+        {{ SidePanel() }}
+        <div class="flex-auto">
+            {% if not pagination.items%}
+            <p class="my-4 text-xl text-center">報告はありません</p>
+            {% endif %}
+            {% for report in pagination.items %}
+            <div>
+                <a href="">{{ report.id }}</a>
+            </div>
+            {% endfor %}
+            <div class="flex justify-center p-1">
+                {{ Pagination(pagination.page, pagination.pages, 'user.favorite') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
