@@ -20,7 +20,7 @@ records:
     <<: *defaults
   - id: !!python/object/apply:uuid.UUID
     - 75736572-4000-0000-a000-000000000003
-    username: franz_fafka
-    email: franz_fafka@example.com
+    username: franz_kafka
+    email: franz_kafka@example.com
     role: administrator
     <<: *defaults

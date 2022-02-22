@@ -18,7 +18,12 @@ from sqlalchemy.types import TypeEngine
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from sixchan.config import ANON_NAME_MAX_LENGTH
+from sixchan.config import (
+    ANON_NAME_MAX_LENGTH,
+    ROLE_ADMINISTRATOR,
+    ROLE_GENERAL,
+    ROLE_MODERATOR,
+)
 from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
 from sixchan.config import BOARD_NAME_MAX_LENGTH
 from sixchan.config import DISPLAY_NAME_MAX_LENGTH
@@ -124,9 +129,9 @@ class AnonymousUser(AnonymousUserMixin):
 
 
 class Role(str, Enum):
-    GENERAL = "general"
-    MODERATOR = "moderator"
-    ADMINISTRATOR = "administrator"
+    GENERAL = ROLE_GENERAL
+    MODERATOR = ROLE_MODERATOR
+    ADMINISTRATOR = ROLE_ADMINISTRATOR
 
 
 class UserAccount(UUIDMixin, TimestampMixin, UserMixin, db.Model):

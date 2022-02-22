@@ -17,7 +17,7 @@
 
 <body class="flex flex-col min-h-full bg-gray-100">
     <!-- Header -->
-    {{ Header(current_user.is_authenticated) }}
+    {{ Header(current_user.is_authenticated, current_user.role) }}
     <!-- Main -->
     <main class="w-full max-w-screen-lg p-2 mx-auto mb-auto text-gray-600">
         {% block content %}{% endblock %}
