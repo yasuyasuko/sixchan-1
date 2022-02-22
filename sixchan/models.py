@@ -186,6 +186,14 @@ class UserAccount(UUIDMixin, TimestampMixin, UserMixin, db.Model):
     def activate(self):
         self.activated = True
 
+    @property
+    def is_moderator(self):
+        return self.role in (Role.MODERATOR, Role.ADMINISTRATOR)
+
+    @property
+    def is_admin(self):
+        return self.role == Role.ADMINISTRATOR
+
 
 class UserProfile(TimestampMixin, db.Model):
     __tablename__ = "user_profiles"

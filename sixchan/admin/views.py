@@ -8,7 +8,6 @@ from flask_login import current_user
 
 from sixchan.admin import queries
 from sixchan.config import REPORT_PER_PAGE
-from sixchan.models import Role
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -16,7 +15,17 @@ admin = Blueprint("admin", __name__, url_prefix="/admin")
 def moderetor_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if current_user.role != Role.MODERATOR:
+        if not current_user.is_moderator:
+            abort(403)
+        return f(*args, **kwargs)
+
+    return wrapper
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_admin:
             abort(403)
         return f(*args, **kwargs)
 
