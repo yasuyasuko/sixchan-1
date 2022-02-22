@@ -1,5 +1,6 @@
 import secrets
 import uuid
+from enum import Enum
 from datetime import datetime
 from datetime import timedelta
 from typing import Any
@@ -122,12 +123,19 @@ class AnonymousUser(AnonymousUserMixin):
         return bool(self.name or self.email)
 
 
+class Role(str, Enum):
+    GENERAL = "general"
+    MODERATOR = "moderator"
+    ADMINISTRATOR = "administrator"
+
+
 class UserAccount(UUIDMixin, TimestampMixin, UserMixin, db.Model):
     __tablename__ = "user_accounts"
     username = db.Column(db.String(USERNAME_MAX_LENGTH), unique=True, nullable=False)
     email = db.Column(db.String(EMAIL_MAX_LENGTH), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     activated = db.Column(db.Boolean, default=False, nullable=False)
+    role = db.Column(db.Enum(Role), default=Role.GENERAL, nullable=False)
     profile = db.relationship("UserProfile", uselist=False)
 
     def get_id(self):
