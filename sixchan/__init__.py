@@ -1,7 +1,8 @@
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
-from flask import Flask, abort
+from flask import Flask
+from flask import abort
 from flask import render_template
 from sqlalchemy.orm import joinedload
 from werkzeug.routing import BaseConverter
