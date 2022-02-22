@@ -11,16 +11,16 @@ SidePanelLink
 {% endif %}
 <li class="{{ container }}">
     <a class="inline-flex items-center p-1 hover:text-blue-500" href="{{ url_for(endpoint) }}">
-        <span class="p-1 material-icons">{{icon}}</span>
-        {{ text }}
+        <span class="p-1 material-icons">{{ icon }}</span>
+        <span class="hidden sm:block">{{ text }}</span>
     </a>
 </li>
 {% endmacro %}
 
 <!-- SidePanel -->
 {% macro SidePanel() %}
-<div class="min-w-min">
-    <ul class="flex flex-col w-56 px-2 text-xl">
+<div class="sm:min-w-min">
+    <ul class="flex my-1 text-xl sm:my-0 sm:flex-col sm:px-2 sm:w-56">
         {{ SidePanelLink("user.account", "アカウント", "account_circle") }}
         {{ SidePanelLink("user.profile", "プロフィール", "badge") }}
         {{ SidePanelLink("user.history", "投稿履歴", "history") }}
