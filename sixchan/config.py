@@ -27,6 +27,8 @@ ROLE_ADMINISTRATOR = "administrator"
 REPORT_STATUS_OPEN = "open"
 REPORT_STATUS_CLOSE = "close"
 
+INAPPROPRIATE_RES_BODY = "あぼーん"
+
 
 class FLASH_LEVEL:
     INFO = "info"
@@ -73,6 +75,7 @@ class FLASH_MESSAGE:
     USER_INFO_UPDATE = "ユーザー情報を更新しました"
     USER_PROFILE_UPDATE = "プロフィールを更新しました"
     USERNAME_ALREADY_EXISTS = "そのユーザー名は既に使われています"
+    REPORT_ACCEPTED = "ご協力ありがとうございます。報告を受け付けました"
 
 
 class Config(ABC):

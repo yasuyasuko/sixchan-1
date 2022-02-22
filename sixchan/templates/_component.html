@@ -88,6 +88,18 @@ Pagination
 {% endmacro %}
 
 <!--
+ SelectField
+     field: wtforms SelectField.
+ -->
+{% macro SelectField(field) %}
+<div class="mt-1">
+    {{ field.label(class="font-semibold") }}
+    <br>
+    {{ field(class="w-full p-1 border border-gray-300 rounded focus:outline-none focus:border-blue-700") }}
+</div>
+{% endmacro %}
+
+<!--
  SubmitButton
      label: button text.
      form: target form id.
@@ -102,8 +114,8 @@ Pagination
  TextLines
      raw: text.
  -->
-{% macro TextLines(raw, id=None) %}
-<p {% if id %}id="{{ id }}" {% endif %}>
+{% macro TextLines(raw, id=None, italic=False) %}
+<p {% if id %}id="{{ id }}" {% endif %} {% if italic %}class="italic" {% endif %}>
     {% for line in raw.split("\n") %}
     {{ line }}<br>
     {% endfor %}

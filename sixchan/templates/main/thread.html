@@ -50,7 +50,13 @@
             {{ Timeago(res.posted_at) }}
             {{ WhoShort(res.who) }}
         </p>
-        {{ TextLines(res.body, "%d-%s" | format(res.number, "body")) }}
+        {{ TextLines(res.body, "%d-body" | format(res.number), res.inappropriate) }}
+        <div id="{{ res.number }}-action" class="flex">
+            {% if not res.inappropriate %}
+            <a href="{{ url_for('main.report', res_id=res.id | uuidshort) }}"
+                class="text-gray-400 text-xs hover:underline" target="_blank" rel="noopener noreferrer">報告</a>
+            {% endif %}
+        </div>
     </div>
     {% endfor %}
 </div>

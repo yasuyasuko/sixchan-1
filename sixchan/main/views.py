@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Blueprint
+from flask import Blueprint, flash
 from flask import abort
 from flask import redirect
 from flask import render_template
@@ -11,15 +11,17 @@ from sqlalchemy.orm import joinedload
 
 from sixchan.config import MAX_RESES_PER_THREAD
 from sixchan.config import THREADS_PER_PAGE
+from sixchan.config import FLASH_MESSAGE as MSG
+from sixchan.config import FLASH_LEVEL as LEVEL
 from sixchan.extensions import db
 from sixchan.main import queries
-from sixchan.main.forms import AnonymousResForm
+from sixchan.main.forms import AnonymousResForm, ReportForm
 from sixchan.main.forms import AnonymousThreadForm
 from sixchan.main.forms import FavoriteForm
 from sixchan.main.forms import OnymousResForm
 from sixchan.main.forms import OnymousThreadForm
 from sixchan.main.utils import normalize_uuid_string
-from sixchan.models import AnonymousUser
+from sixchan.models import AnonymousUser, Report, ReportReason
 from sixchan.models import Board
 from sixchan.models import BoardCategory
 from sixchan.models import Thread
@@ -125,3 +127,28 @@ def user(username):
     user_ = queries.get_user(username)
     context = {"user": user_}
     return render_template("main/user.html", **context)
+
+
+@main.route("/report/<res_id>", methods=["GET", "POST"])
+def report(res_id):
+    try:
+        res_uuid = normalize_uuid_string(res_id)
+    except ValueError:
+        abort(404)
+    res = queries.get_res(res_uuid)
+    reasons = [(r.name, r.text) for r in ReportReason.query.all()]
+    form = ReportForm()
+    form.reason.choices = reasons
+    if form.validate_on_submit():
+        reporter = current_user if current_user.is_authenticated else None
+        report = Report(
+            reason_name=form.reason.data,
+            detail=form.detail.data,
+            res_id=res.id,
+            reported_by=reporter,
+        )
+        db.session.add(report)
+        flash(MSG.REPORT_ACCEPTED, LEVEL.SUCCESS)
+        return redirect(request.url)
+    context = {"res": res, "form": form}
+    return render_template("main/report.html", **context)

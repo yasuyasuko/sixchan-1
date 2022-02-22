@@ -31,7 +31,6 @@
         return refs
     }
 
-
     const generateDirectRefs = () => {
         const re = />>(?<id>[1-9]|[1-9][0-9]{1,2}|1000)/mg
         const iter = document.evaluate("//div[@id='res-container']/div", document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
@@ -57,12 +56,13 @@
 
     const setupButton = (num, ref) => {
         const resContainer = document.getElementById(`${num}`)
+        const actionContainer = document.getElementById(`${num}-action`)
         const refContainer = document.createElement('div')
         const button = document.createElement('button')
-        button.classList.add("text-gray-400", "text-xs", "hover:underline")
+        button.classList.add("mr-1", "text-gray-400", "text-xs", "hover:underline")
         button.innerText = "関連レスを表示"
         button.onclick = () => showRef(refContainer, num, ref)
-        refContainer.appendChild(button)
+        actionContainer.prepend(button)
         resContainer.appendChild(refContainer)
     }
 

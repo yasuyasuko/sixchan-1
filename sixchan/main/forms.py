@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from wtforms import SelectField
 from wtforms import StringField
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
@@ -65,3 +66,8 @@ class OnymousThreadForm(FlaskForm):
         "コメント内容",
         validators=[DataRequired(), Length(max=BODY_MAX_LENGTH)],
     )
+
+
+class ReportForm(FlaskForm):
+    reason = SelectField("報告理由", coerce=str, validators=[DataRequired()])
+    detail = TextAreaField("詳細", validators=[Length(max=BODY_MAX_LENGTH)])

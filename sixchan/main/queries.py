@@ -6,6 +6,7 @@ from uuid import UUID
 
 from sqlalchemy import func
 
+from sixchan.config import INAPPROPRIATE_RES_BODY
 from sixchan.models import AnonymousAuthor
 from sixchan.models import OnymousAuthor
 from sixchan.models import Res
@@ -40,9 +41,11 @@ class ThreadOverviewQueryModel:
 
 
 class ResRow(NamedTuple):
+    id: UUID
     number: int
     who: str
     body: str
+    inappropriate: bool
     created_at: datetime
     anon_name: Optional[str]
     anon_email: Optional[str]
@@ -52,14 +55,23 @@ class ResRow(NamedTuple):
 
 @dataclass
 class ResQueryModel:
+    id: UUID
     number: int
     who: str
-    body: str
+    _body: str
+    inappropriate: bool
     posted_at: datetime
     is_anonymous: bool
     name: str
     username: Optional[str] = None
     email: Optional[str] = None
+
+    @property
+    def body(self) -> str:
+        if self.inappropriate:
+            return INAPPROPRIATE_RES_BODY
+        else:
+            return self._body
 
     @classmethod
     def from_row(cls, row: ResRow) -> "ResQueryModel":
@@ -67,9 +79,11 @@ class ResQueryModel:
         name = row.anon_name if is_anonymous else row.display_name
         name = name or "null"
         return cls(
+            id=row.id,
             number=row.number,
             who=row.who,
-            body=row.body,
+            _body=row.body,
+            inappropriate=row.inappropriate,
             posted_at=row.created_at,
             is_anonymous=is_anonymous,
             name=name,
@@ -125,9 +139,11 @@ def get_reses(thread_id: UUID) -> list[ResQueryModel]:
     query = (
         Res.query.filter_by(thread_id=thread_id)
         .with_entities(
+            Res.id,
             Res.number,
             Res.who,
             Res.body,
+            Res.inappropriate,
             Res.created_at,
             AnonymousAuthor.name.label("anon_name"),
             AnonymousAuthor.email.label("anon_email"),
@@ -143,6 +159,30 @@ def get_reses(thread_id: UUID) -> list[ResQueryModel]:
     reses = [ResQueryModel.from_row(row) for row in query.all()]
     reses.sort(key=lambda x: x.number)
     return reses
+
+
+def get_res(res_id: UUID) -> ResQueryModel:
+    query = (
+        Res.query.filter_by(id=res_id)
+        .with_entities(
+            Res.id,
+            Res.number,
+            Res.who,
+            Res.body,
+            Res.inappropriate,
+            Res.created_at,
+            AnonymousAuthor.name.label("anon_name"),
+            AnonymousAuthor.email.label("anon_email"),
+            UserAccount.username,
+            UserProfile.display_name,
+        )
+        .outerjoin(AnonymousAuthor)
+        .outerjoin(OnymousAuthor)
+        .outerjoin(UserAccount, OnymousAuthor.author_id == UserAccount.id)
+        .outerjoin(UserProfile)
+    )
+    row = query.first()
+    return ResQueryModel.from_row(row)
 
 
 def get_user(username: str) -> UserQueryModel:
