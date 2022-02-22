@@ -2,6 +2,7 @@ from typing import Optional
 
 from flask import Flask
 from flask import render_template
+from sqlalchemy.orm import joinedload
 
 from sixchan.config import FLASH_LEVEL
 from sixchan.config import FLASH_MESSAGE
@@ -83,7 +84,11 @@ def create_app() -> Flask:
 
     @login_manager.user_loader
     def load_user(username: str) -> Optional[UserAccount]:
-        return UserAccount.query.filter_by(username=username).first()
+        return (
+            UserAccount.query.filter_by(username=username)
+            .options(joinedload(UserAccount.profile))
+            .first()
+        )
 
     # setup jinja2
     from sixchan.filters import ago_from_now_format

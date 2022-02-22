@@ -15,3 +15,8 @@ records:
     display_name: Grete Samsa
     introduction: I hate Ungeziefer.
     <<: *defaults
+  - account_id: !!python/object/apply:uuid.UUID
+    - 75736572-4000-0000-a000-000000000003
+    display_name: Franz Kafka
+    introduction: I am a German-speaking Bohemian novelist and short-story writer, widely regarded as one of the major figures of 20th-century literature.
+    <<: *defaults
