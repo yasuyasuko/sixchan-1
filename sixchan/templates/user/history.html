@@ -9,7 +9,7 @@
 {% block content %}
 <div>
     <h1 class="p-2 text-xl font-bold">@{{ current_user.username }}の投稿履歴</h1>
-    <div class="flex text-gray-600">
+    <div class="text-gray-600 sm:flex">
         {{ SidePanel() }}
         <div class="flex-auto">
             {% if not pagination.items%}
