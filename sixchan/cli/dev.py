@@ -10,7 +10,7 @@ from faker import Faker
 from flask import Blueprint
 
 from sixchan.extensions import db
-from sixchan.models import Res
+from sixchan.models import UUID, Res
 from sixchan.models import Thread
 
 MOCKS_DIR = Path(__file__).parent / "mocks"
@@ -24,7 +24,7 @@ def _load_yaml(path: Path):
 
 
 @dev.cli.command("insert_mockdata")
-def insert_mockdata():
+def insert_mockdata() -> None:
     data_list = [_load_yaml(yml) for yml in MOCKS_DIR.glob("*.yml")]
     dependence_graph = {d["class"]: set(d.get("depends", {})) for d in data_list}
     ts = TopologicalSorter(dependence_graph)
@@ -46,7 +46,7 @@ def fake():
 @fake.command()
 @click.option("-b", "--board_id", required=True, type=click.UUID)
 @click.option("-n", "--num", required=True, type=int)
-def thread(board_id, num):
+def thread(board_id: UUID, num: int) -> None:
     faker = Faker("ja_JP")
     threads = []
     reses = []
@@ -75,7 +75,7 @@ def thread(board_id, num):
 @fake.command()
 @click.option("-t", "--thread_id", required=True, type=click.UUID)
 @click.option("-n", "--num", required=True, type=int)
-def res(thread_id, num):
+def res(thread_id: UUID, num: int) -> None:
     faker = Faker("ja_JP")
     thread = Thread.query.get(thread_id)
     current_number = thread.reses_count

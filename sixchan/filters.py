@@ -21,7 +21,7 @@ def uuidshort(uuid: uuid.UUID) -> str:
     return shortuuid.encode(uuid)
 
 
-def agoformat(delta: timedelta):
+def agoformat(delta: timedelta) -> str:
     if delta.days > 0 or delta.seconds > 0:
         humanize.i18n.activate("ja_JP")
         humanized = humanize.naturaldelta(delta)
@@ -35,6 +35,6 @@ def agoformat(delta: timedelta):
         return str(delta)[6:].rstrip("0") + "秒前"
 
 
-def ago_from_now_format(dt: datetime):
+def ago_from_now_format(dt: datetime) -> str:
     delta = datetime.utcnow() - dt
     return agoformat(delta)

@@ -182,12 +182,12 @@ class UserProfile(TimestampMixin, db.Model):
         "Res", backref=db.backref("author", uselist=False), secondary="onymous_authors"
     )
 
-    def favorite(self, thread) -> None:
+    def favorite(self, thread: "Thread") -> None:
         if self.is_favorite(thread):
             return
         db.session.add(Favorite(account_id=self.account_id, thread_id=thread.id))
 
-    def unfavorite(self, thread):
+    def unfavorite(self, thread: "Thread") -> None:
         if not self.is_favorite(thread):
             return
         existed = Favorite.query.filter_by(
@@ -195,13 +195,13 @@ class UserProfile(TimestampMixin, db.Model):
         ).first()
         db.session.delete(existed)
 
-    def is_favorite(self, thread) -> bool:
+    def is_favorite(self, thread: "Thread") -> bool:
         existed = Favorite.query.filter_by(
             account_id=self.account_id, thread_id=thread.id
         ).first()
         return bool(existed)
 
-    def toggle_favorite(self, thread) -> None:
+    def toggle_favorite(self, thread: "Thread") -> None:
         if self.is_favorite(thread):
             self.unfavorite(thread)
         else:

@@ -14,7 +14,7 @@ from sixchan.models import AnonymousUser
 from sixchan.models import UserAccount
 
 
-def _debug_mode(app):
+def _debug_mode(app: Flask) -> None:
     import logging
     import re
     import sys
@@ -59,7 +59,7 @@ def _debug_mode(app):
         return "this is a page for debug"
 
 
-def create_app():
+def create_app() -> Flask:
     # setup flask app
     app = Flask(__name__)
     app.config.from_object(get_config(app.env))
