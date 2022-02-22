@@ -163,11 +163,11 @@ def get_reses(thread_id: UUID) -> list[ResQueryModel]:
 
 def get_res(res_id: UUID) -> ResQueryModel:
     query = (
-        Res.query.outerjoin(AnonymousAuthor)
+        Res.query.filter_by(id=res_id)
+        .outerjoin(AnonymousAuthor)
         .outerjoin(OnymousAuthor)
         .outerjoin(UserAccount, OnymousAuthor.author_id == UserAccount.id)
         .outerjoin(UserProfile)
-        .filter_by(id=res_id)
         .with_entities(
             Res.id,
             Res.number,

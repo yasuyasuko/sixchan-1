@@ -1,7 +1,7 @@
 from datetime import datetime
+from uuid import UUID
 
 from flask import Blueprint
-from flask import abort
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -22,7 +22,6 @@ from sixchan.main.forms import FavoriteForm
 from sixchan.main.forms import OnymousResForm
 from sixchan.main.forms import OnymousThreadForm
 from sixchan.main.forms import ReportForm
-from sixchan.main.utils import normalize_uuid_string
 from sixchan.models import AnonymousUser
 from sixchan.models import Board
 from sixchan.models import BoardCategory
@@ -41,17 +40,12 @@ def index():
     return render_template("main/index.html", board_categories=board_categories)
 
 
-@main.route("/boards/<board_id>", methods=["GET", "POST"])
-def board(board_id: str):
-    try:
-        board_uuid = normalize_uuid_string(board_id)
-    except ValueError:
-        abort(404)
-
-    board = Board.query.get_or_404(board_uuid)
+@main.route("/boards/<suuid:board_id>", methods=["GET", "POST"])
+def board(board_id: UUID):
+    board = Board.query.get_or_404(board_id)
     page = request.args.get("page", default=1, type=int)
     pagination = queries.get_threads_pagination(
-        board_id=board_uuid, page=page, per_page=THREADS_PER_PAGE
+        board_id=board_id, page=page, per_page=THREADS_PER_PAGE
     )
 
     if current_user.is_authenticated:
@@ -81,14 +75,9 @@ def board(board_id: str):
     return render_template("main/board.html", **context)
 
 
-@main.route("/threads/<thread_id>", methods=["GET", "POST"])
-def thread(thread_id: str):
-    try:
-        thread_uuid = normalize_uuid_string(thread_id)
-    except ValueError:
-        abort(404)
-
-    thread = Thread.query.get_or_404(thread_uuid)
+@main.route("/threads/<suuid:thread_id>", methods=["GET", "POST"])
+def thread(thread_id: UUID):
+    thread = Thread.query.get_or_404(thread_id)
     reses = queries.get_reses(thread.id)
     can_post = len(reses) < MAX_RESES_PER_THREAD
 
@@ -133,13 +122,9 @@ def user(username):
     return render_template("main/user.html", **context)
 
 
-@main.route("/report/<res_id>", methods=["GET", "POST"])
-def report(res_id):
-    try:
-        res_uuid = normalize_uuid_string(res_id)
-    except ValueError:
-        abort(404)
-    res = queries.get_res(res_uuid)
+@main.route("/report/<suuid:res_id>", methods=["GET", "POST"])
+def report(res_id: UUID):
+    res = queries.get_res(res_id)
     reasons = [(r.name, r.text) for r in ReportReason.query.all()]
     form = ReportForm()
     form.reason.choices = reasons

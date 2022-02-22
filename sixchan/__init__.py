@@ -1,8 +1,10 @@
+from uuid import UUID
 from typing import Optional
 
-from flask import Flask
+from flask import Flask, abort
 from flask import render_template
 from sqlalchemy.orm import joinedload
+from werkzeug.routing import BaseConverter
 
 from sixchan.config import FLASH_LEVEL
 from sixchan.config import FLASH_MESSAGE
@@ -11,6 +13,7 @@ from sixchan.extensions import csrf
 from sixchan.extensions import db
 from sixchan.extensions import login_manager
 from sixchan.extensions import mail
+from sixchan.main.utils import normalize_uuid_string
 from sixchan.models import AnonymousUser
 from sixchan.models import UserAccount
 
@@ -64,6 +67,16 @@ def create_app() -> Flask:
     # setup flask app
     app = Flask(__name__)
     app.config.from_object(get_config(app.env))
+
+    class ShortUUIDConverter(BaseConverter):
+        def to_python(self, value: str) -> UUID:
+            try:
+                uuid = normalize_uuid_string(value)
+            except ValueError:
+                abort(404)
+            return uuid
+
+    app.url_map.converters["suuid"] = ShortUUIDConverter
 
     @app.errorhandler(404)
     def page_not_found(error):
