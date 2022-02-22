@@ -109,23 +109,23 @@ def get_threads_pagination(board_id: UUID, page: int, per_page: int):
         pagination.total = total
 
     subquery = (
-        Res.query.with_entities(
+        Res.query.group_by(Res.thread_id)
+        .with_entities(
             Res.thread_id,
             func.count(Res.id).label("reses_count"),
             func.max(Res.created_at).label("last_created_at"),
         )
-        .group_by(Res.thread_id)
         .subquery("reses")
     )
     query = (
-        Thread.query.with_entities(
+        Thread.query.filter_by(board_id=board_id)
+        .join(subquery, Thread.id == subquery.c.thread_id)
+        .with_entities(
             Thread.id,
             Thread.name,
             subquery.c.reses_count,
             subquery.c.last_created_at,
         )
-        .filter_by(board_id=board_id)
-        .join(subquery, Thread.id == subquery.c.thread_id)
         .order_by(subquery.c.last_created_at.desc())
         .limit(pagination.limit)
         .offset(pagination.offset)
@@ -163,7 +163,11 @@ def get_reses(thread_id: UUID) -> list[ResQueryModel]:
 
 def get_res(res_id: UUID) -> ResQueryModel:
     query = (
-        Res.query.filter_by(id=res_id)
+        Res.query.outerjoin(AnonymousAuthor)
+        .outerjoin(OnymousAuthor)
+        .outerjoin(UserAccount, OnymousAuthor.author_id == UserAccount.id)
+        .outerjoin(UserProfile)
+        .filter_by(id=res_id)
         .with_entities(
             Res.id,
             Res.number,
@@ -176,10 +180,6 @@ def get_res(res_id: UUID) -> ResQueryModel:
             UserAccount.username,
             UserProfile.display_name,
         )
-        .outerjoin(AnonymousAuthor)
-        .outerjoin(OnymousAuthor)
-        .outerjoin(UserAccount, OnymousAuthor.author_id == UserAccount.id)
-        .outerjoin(UserProfile)
     )
     row = query.first()
     return ResQueryModel.from_row(row)
@@ -188,11 +188,11 @@ def get_res(res_id: UUID) -> ResQueryModel:
 def get_user(username: str) -> UserQueryModel:
     query = (
         UserAccount.query.filter_by(username=username)
+        .join(UserProfile)
         .with_entities(
             UserAccount.username,
             UserProfile.display_name,
             UserProfile.introduction,
         )
-        .join(UserProfile)
     )
     return UserQueryModel(**query.first())

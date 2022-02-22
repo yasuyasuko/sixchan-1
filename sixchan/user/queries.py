@@ -98,8 +98,8 @@ def get_threads_pagination(user: UserAccount, page: int, per_page: int):
     total_query = (
         OnymousAuthor.query.join(Res)
         .filter(OnymousAuthor.author_id == user.id)
-        .with_entities(Res.thread_id)
         .group_by(Res.thread_id)
+        .with_entities(Res.thread_id)
     )
 
     total = total_query.count()
@@ -118,6 +118,9 @@ def get_threads_pagination(user: UserAccount, page: int, per_page: int):
 
     query = (
         OnymousAuthor.query.join(Res)
+        .join(subquery, Res.thread_id == subquery.c.thread_id)
+        .join(Thread)
+        .join(Board)
         .filter(OnymousAuthor.author_id == user.id)
         .with_entities(
             Board.id.label("board_id"),
@@ -129,9 +132,6 @@ def get_threads_pagination(user: UserAccount, page: int, per_page: int):
             Res.body.label("res_body"),
             Res.created_at.label("res_created_at"),
         )
-        .join(subquery, Res.thread_id == subquery.c.thread_id)
-        .join(Thread)
-        .join(Board)
     )
 
     items = [
@@ -154,24 +154,24 @@ def get_favorite_threads_pagination(user: UserAccount, page: int, per_page: int)
         pagination.total = total
 
     subquery = (
-        Res.query.with_entities(
+        Res.query.group_by(Res.thread_id)
+        .with_entities(
             Res.thread_id,
             func.count(Res.id).label("reses_count"),
             func.max(Res.created_at).label("last_created_at"),
         )
-        .group_by(Res.thread_id)
         .subquery("reses")
     )
     query = (
-        Thread.query.with_entities(
+        Thread.query.join(subquery, Thread.id == subquery.c.thread_id)
+        .where(Thread.id == Favorite.thread_id, user.id == Favorite.account_id)
+        .with_entities(
             Thread.id,
             Thread.name,
             subquery.c.reses_count,
             subquery.c.last_created_at,
             Favorite.created_at,
         )
-        .where(Thread.id == Favorite.thread_id, user.id == Favorite.account_id)
-        .join(subquery, Thread.id == subquery.c.thread_id)
         .order_by(Favorite.created_at.desc())
         .limit(pagination.limit)
         .offset(pagination.offset)
