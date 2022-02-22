@@ -1,3 +1,5 @@
+import os
+
 ANON_NAME_MAX_LENGTH = 50
 BOARD_CATEGORY_NAME_MAX_LENGTH = 30
 BOARD_NAME_MAX_LENGTH = 30
@@ -63,11 +65,65 @@ class FLASH_MESSAGE:
 
 
 class Config:
+    TESTING = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        uri = (
+            f"{self.DATABASE_DRIVER}://"
+            f"{self.DATABASE_USERNAME}:{self.DATABASE_PASSWORD}"
+            f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}"
+            f"/{self.DATABASE_NAME}"
+        )
+        print(uri)
+        return uri
+
+
+class ProductionConfig(Config):
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    MAIL_SERVER = os.environ.get("MAIL_SERVER")
+    MAIL_PORT = os.environ.get("MAIL_PORT")
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
+    DATABASE_DRIVER = os.environ.get("DATABASE_DIALECT")
+    DATABASE_USERNAME = os.environ.get("DATABASE_DRIVER")
+    DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
+    DATABASE_HOST = os.environ.get("DATABASE_HOST")
+    DATABASE_PORT = os.environ.get("DATABASE_PORT")
+    DATABASE_NAME = os.environ.get("DATABASE_NAME")
+
+
+class DevelopmentConfig(Config):
+    SECRET_KEY = "bazinga"
     MAIL_SERVER = "localhost"
     MAIL_PORT = 11025
     MAIL_USERNAME = "sixchan@example.com"
     MAIL_PASSWORD = "password"
+    DATABASE_DRIVER = "postgresql"
+    DATABASE_USERNAME = "sixchan"
+    DATABASE_PASSWORD = "password"
+    DATABASE_HOST = "localhost"
+    DATABASE_PORT = 54321
+    DATABASE_NAME = "sixchan"
     SQLALCHEMY_ECHO = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://sixchan:password@localhost:54321/sixchan"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+class TestingConfig(Config):
+    TESTING = True
     SECRET_KEY = "bazinga"
+    MAIL_SERVER = "localhost"
+    MAIL_PORT = 11025
+    MAIL_USERNAME = "sixchan@example.com"
+    MAIL_PASSWORD = "password"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+
+
+def get_config(env: str) -> Config:
+    env = env.lower()
+    configs = {
+        "production": ProductionConfig(),
+        "development": DevelopmentConfig(),
+        "testing": TestingConfig(),
+    }
+    return configs.get(env)

@@ -3,9 +3,8 @@ from typing import Optional
 from flask import Flask
 from flask import render_template
 
-from sixchan.config import FLASH_LEVEL
+from sixchan.config import FLASH_LEVEL, get_config
 from sixchan.config import FLASH_MESSAGE
-from sixchan.config import Config
 from sixchan.extensions import csrf
 from sixchan.extensions import db
 from sixchan.extensions import login_manager
@@ -62,7 +61,7 @@ def _debug_mode(app):
 def create_app():
     # setup flask app
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(get_config(app.env))
 
     @app.errorhandler(404)
     def page_not_found(error):
