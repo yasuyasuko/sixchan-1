@@ -5,31 +5,32 @@
 {% from "_component.html" import TextLines %}
 {% from "user/_component.html" import SidePanel %}
 {% from "user/_component.html" import Breadcrumb %}
-{% block title %}{{ current_user.username }}{% endblock %}
+{% block title %}
+  {{ current_user.username }}
+{% endblock %}
 {% block content %}
-<div>
+  <div>
     <h1 class="p-2 text-xl font-bold">@{{ current_user.username }}のお気に入り</h1>
     <div class="text-gray-600 sm:flex">
-        {{ SidePanel() }}
-        <div class="flex-auto">
-            {% if not pagination.items%}
-            <p class="my-4 text-xl text-center">お気に入りはありません</p>
-            {% endif %}
-            {% for thread in pagination.items %}
-            <div>
-                <a class="font-semibold text-blue-500"
-                    href="{{ url_for('main.thread', thread_id=thread.id | uuidshort) }}">
-                    {{ thread.name }}({{ thread.reses_count }})
-                </a>
-                <span class="text-sm text-gray-500">
-                    {{ thread.last_posted_at | ago_from_now_format }}に最後の投稿
-                </span>
-            </div>
-            {% endfor %}
-            <div class="flex justify-center p-1">
-                {{ Pagination(pagination.page, pagination.pages, 'user.favorite') }}
-            </div>
+      {{ SidePanel() }}
+      <div class="flex-auto">
+        {% if not pagination.items%}
+          <p class="my-4 text-xl text-center">お気に入りはありません</p>
+        {% endif %}
+        {% for thread in pagination.items %}
+          <div>
+            <a class="font-semibold text-blue-500" href="{{ url_for('main.thread', thread_id=thread.id | uuidshort) }}">
+              {{ thread.name }}({{ thread.reses_count }})
+            </a>
+            <span class="text-sm text-gray-500">
+              {{ thread.last_posted_at | ago_from_now_format }}に最後の投稿
+            </span>
+          </div>
+        {% endfor %}
+        <div class="flex justify-center p-1">
+          {{ Pagination(pagination.page, pagination.pages, 'user.favorite') }}
         </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

@@ -1,49 +1,44 @@
-<!--
-SidePanelLink
-    endpoint: the endpoint of the URL (name of the function).
-    text: link text.
-    icon: google material icon's name.
- -->
+<!-- SidePanelLink -->
+<!-- endpoint: the endpoint of the URL (name of the function). -->
+<!-- text: link text. -->
+<!-- icon: google material icon's name. -->
 {% macro SidePanelLink(endpoint, text, icon) %}
-{% set container = "mb-1 " %}
-{% if request.endpoint == endpoint %}
-{% set container = container + "text-blue-500 bg-white rounded" %}
-{% endif %}
-<li class="{{ container }}">
+  {% set container = "mb-1 " %}
+  {% if request.endpoint == endpoint %}
+    {% set container = container + "text-blue-500 bg-white rounded" %}
+  {% endif %}
+  <li class="{{ container }}">
     <a class="inline-flex items-center p-1 hover:text-blue-500" href="{{ url_for(endpoint) }}">
-        <span class="p-1 material-icons">{{ icon }}</span>
-        <span class="hidden sm:block">{{ text }}</span>
+      <span class="p-1 material-icons">{{ icon }}</span>
+      <span class="hidden sm:block">{{ text }}</span>
     </a>
-</li>
+  </li>
 {% endmacro %}
 
 <!-- SidePanel -->
 {% macro SidePanel() %}
-<div class="sm:min-w-min">
+  <div class="sm:min-w-min">
     <ul class="flex my-1 text-xl sm:my-0 sm:flex-col sm:px-2 sm:w-56">
-        {{ SidePanelLink("user.account", "アカウント", "account_circle") }}
-        {{ SidePanelLink("user.profile", "プロフィール", "badge") }}
-        {{ SidePanelLink("user.history", "投稿履歴", "history") }}
-        {{ SidePanelLink("user.favorite", "お気に入り", "favorite") }}
-    </ul>
+      {{ SidePanelLink("user.account", "アカウント", "account_circle") }}
+      {{ SidePanelLink("user.profile", "プロフィール", "badge") }}
+      {{ SidePanelLink("user.history", "投稿履歴", "history") }}
+      {{ SidePanelLink("user.favorite", "お気に入り", "favorite") }}
+  </ul>
 </div>
 {% endmacro %}
 
-<!--
- Breadcrumb
-     thread: UserThreadQueryModel
-  -->
+<!-- Breadcrumb -->
+<!-- thread: UserThreadQueryModel -->
 {% macro Breadcrumb(thread) %}
 <p class="inline-flex items-center font-semibold text-green-500">
-    <a class="font-semibold hover:text-green-400"
-        href="{{ url_for('main.board', board_id=thread.board_id | uuidshort) }}">
-        {{ thread.board_name }}
-    </a>
-    <span class="text-gray-500 material-icons">
-        chevron_right
-    </span>
-    <a class="font-semibold hover:text-green-400" href="{{ url_for('main.thread', thread_id=thread.id | uuidshort) }}">
-        {{ thread.name }}
-    </a>
+  <a class="font-semibold hover:text-green-400" href="{{ url_for('main.board', board_id=thread.board_id | uuidshort) }}">
+    {{ thread.board_name }}
+  </a>
+  <span class="text-gray-500 material-icons">
+    chevron_right
+  </span>
+  <a class="font-semibold hover:text-green-400" href="{{ url_for('main.thread', thread_id=thread.id | uuidshort) }}">
+    {{ thread.name }}
+  </a>
 </p>
 {% endmacro %}

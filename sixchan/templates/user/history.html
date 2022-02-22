@@ -5,37 +5,39 @@
 {% from "_component.html" import TextLines %}
 {% from "user/_component.html" import SidePanel %}
 {% from "user/_component.html" import Breadcrumb %}
-{% block title %}{{ current_user.username }}{% endblock %}
+{% block title %}
+  {{ current_user.username }}
+{% endblock %}
 {% block content %}
-<div>
+  <div>
     <h1 class="p-2 text-xl font-bold">@{{ current_user.username }}の投稿履歴</h1>
     <div class="text-gray-600 sm:flex">
-        {{ SidePanel() }}
-        <div class="flex-auto">
-            {% if not pagination.items%}
-            <p class="my-4 text-xl text-center">投稿履歴はありません</p>
-            {% endif %}
-            {% for thread in pagination.items %}
-            <div class="p-4 mb-2 bg-white rounded shadow">
-                {{ Breadcrumb(thread) }}
-                {% for res in thread.reses %}
-                <a href="{{ url_for('main.thread', thread_id=thread.id | uuidshort, _anchor=res.number) }}"
-                    class="block p-2 my-1 transition duration-500 transform bg-white rounded shadow hover:scale-110">
-                    <p class="font-medium">
-                        {{res.number}}
-                        名前: <span class="text-blue-500">{{current_user.profile.display_name}}</span>
-                        {{ Timeago(res.posted_at) }}
-                        {{ WhoShort(res.who) }}
-                    </p>
-                    {{ TextLines(res.body) }}
-                </a>
-                {% endfor %}
-            </div>
+      {{ SidePanel() }}
+      <div class="flex-auto">
+        {% if not pagination.items%}
+          <p class="my-4 text-xl text-center">投稿履歴はありません</p>
+        {% endif %}
+        {% for thread in pagination.items %}
+          <div class="p-4 mb-2 bg-white rounded shadow">
+            {{ Breadcrumb(thread) }}
+            {% for res in thread.reses %}
+              <a href="{{ url_for('main.thread', thread_id=thread.id | uuidshort, _anchor=res.number) }}" class="block p-2 my-1 transition duration-500 transform bg-white rounded shadow hover:scale-110">
+                <p class="font-medium">
+                  {{res.number}}
+                  名前:
+                  <span class="text-blue-500">{{current_user.profile.display_name}}</span>
+                  {{ Timeago(res.posted_at) }}
+                  {{ WhoShort(res.who) }}
+                </p>
+                {{ TextLines(res.body) }}
+              </a>
             {% endfor %}
-            <div class="flex justify-center p-1">
-                {{ Pagination(pagination.page, pagination.pages, 'user.history') }}
-            </div>
+          </div>
+        {% endfor %}
+        <div class="flex justify-center p-1">
+          {{ Pagination(pagination.page, pagination.pages, 'user.history') }}
         </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

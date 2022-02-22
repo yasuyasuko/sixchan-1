@@ -1,54 +1,63 @@
 {% extends "_base.html" %}
 {% from "_component.html" import Pagination %}
 {% from "admin/_component.html" import SidePanel %}
-{% block title %}{{ current_user.username }}{% endblock %}
+{% block title %}
+  {{ current_user.username }}
+{% endblock %}
 {% block content %}
-<div>
-    <h1 class="p-2 text-xl font-bold">@{{ current_user.username }}(管理者) 報告一覧</h1>
+  <div>
+    <h1 class="p-2 text-xl font-bold">
+      @{{ current_user.username }}(管理者) 報告一覧
+    </h1>
     <div class="text-gray-600 sm:flex">
-        {{ SidePanel() }}
-        <div class="flex-auto">
-            {% if not pagination.items%}
-            <p class="my-4 text-xl text-center">報告はありません</p>
-            {% endif %}
-            <ul>
-                {% for report in pagination.items %}
-                <li class="p-1 bg-white">
-                    <div href="#">
-                        <p>
-                            <span class="font-semibold">ID: </span>
-                            <span>{{ report.id }}</span>
-                        </p>
-                        <p>
-                            <span class="font-semibold">ReportedAt: </span>
-                            <span>{{ report.created_at }}</span>
-                        </p>
-                        <p>
-                            <span class="font-semibold">Status: </span>
-                            <span>{{ report.status.value }}</span>
-                        </p>
-                        <p>
-                            <span class="font-semibold">Resaon: </span>
-                            <span>{{ report.reason_text }}</span>
-                        </p>
-                        <p>
-                            <span class="font-semibold">Detail: </span>
-                            <span>{{ report.detail }}</span>
-                        </p>
-                        <p>
-                            <span class="font-semibold">Body: </span>
-                            <span>{{ report.res_body }}</span>
-                        </p>
-                        <a class="text-gray-400 text-xs hover:underline" target="_blank" rel="noopener noreferrer"
-                            href="{{ url_for('main.thread', thread_id=report.thread_id)}}#{{report.res_number}}">元のレスを確認</a>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-            <div class="flex justify-center p-1">
-                {{ Pagination(pagination.page, pagination.pages, 'user.favorite') }}
-            </div>
+      {{ SidePanel() }}
+      <div class="flex-auto">
+        {% if not pagination.items%}
+          <p class="my-4 text-xl text-center">報告はありません</p>
+        {% endif %}
+        <ul>
+          {% for report in pagination.items %}
+            <li class="p-1 bg-white">
+              <div href="#">
+                <p>
+                  <span class="font-semibold">ID:
+                  </span>
+                  <span>{{ report.id }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">ReportedAt:
+                  </span>
+                  <span>{{ report.created_at }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Status:
+                  </span>
+                  <span>{{ report.status.value }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Resaon:
+                  </span>
+                  <span>{{ report.reason_text }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Detail:
+                  </span>
+                  <span>{{ report.detail }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Body:
+                  </span>
+                  <span>{{ report.res_body }}</span>
+                </p>
+                <a class="text-gray-400 text-xs hover:underline" target="_blank" rel="noopener noreferrer" href="{{ url_for('main.thread', thread_id=report.thread_id)}}#{{report.res_number}}">元のレスを確認</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="flex justify-center p-1">
+          {{ Pagination(pagination.page, pagination.pages, 'user.favorite') }}
         </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

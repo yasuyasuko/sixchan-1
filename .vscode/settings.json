@@ -9,5 +9,11 @@
     "files.exclude": {
         "**/__pycache__": true,
         "**/.mypy_cache": true
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
     }
 }
