@@ -1,8 +1,8 @@
 import secrets
 import uuid
-from enum import Enum
 from datetime import datetime
 from datetime import timedelta
+from enum import Enum
 from typing import Any
 from typing import Optional
 from typing import Text
@@ -20,15 +20,17 @@ from werkzeug.security import generate_password_hash
 
 from sixchan.config import (
     ANON_NAME_MAX_LENGTH,
-    ROLE_ADMINISTRATOR,
-    ROLE_GENERAL,
-    ROLE_MODERATOR,
+    REPORT_REASON_NAME_MAX_LENGTH,
+    REPORT_REASON_TEXT_MAX_LENGTH,
 )
 from sixchan.config import BOARD_CATEGORY_NAME_MAX_LENGTH
 from sixchan.config import BOARD_NAME_MAX_LENGTH
 from sixchan.config import DISPLAY_NAME_MAX_LENGTH
 from sixchan.config import EMAIL_MAX_LENGTH
 from sixchan.config import MAX_RESES_PER_THREAD
+from sixchan.config import ROLE_ADMINISTRATOR
+from sixchan.config import ROLE_GENERAL
+from sixchan.config import ROLE_MODERATOR
 from sixchan.config import THREAD_NAME_MAX_LENGTH
 from sixchan.config import USERNAME_MAX_LENGTH
 from sixchan.extensions import db
@@ -315,6 +317,23 @@ class Board(UUIDMixin, TimestampMixin, db.Model):
         new_thread = Thread(name=thread_name, board_id=self.id)
         self.threads.append(new_thread)
         return new_thread
+
+
+class ReportReason(db.Model):
+    __tablename__ = "report_reasons"
+    name = db.Column(db.String(REPORT_REASON_NAME_MAX_LENGTH), primary_key=True)
+    text = db.Column(db.String(REPORT_REASON_TEXT_MAX_LENGTH), nullable=False)
+
+
+class Report(UUIDMixin, TimestampMixin, db.Model):
+    __tablename__ = "reports"
+    reason_name = db.Column(
+        db.String(REPORT_REASON_NAME_MAX_LENGTH),
+        db.ForeignKey("report_reasons.name"),
+        nullable=False,
+    )
+    detail = db.Column(db.Text, default="", nullable=False)
+    reported_by = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=True)
 
 
 class BoardCategory(UUIDMixin, TimestampMixin, db.Model):

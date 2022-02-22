@@ -10,7 +10,8 @@ from faker import Faker
 from flask import Blueprint
 
 from sixchan.extensions import db
-from sixchan.models import UUID, Res
+from sixchan.models import UUID
+from sixchan.models import Res
 from sixchan.models import Thread
 
 MOCKS_DIR = Path(__file__).parent / "mocks"

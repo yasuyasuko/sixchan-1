@@ -88,3 +88,11 @@ records:
     created_at: 1912-11-24 00:07:32.821
     updated_at: 1912-11-24 00:07:32.821
     <<: *gregorThreadDefaults
+  - id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000011
+    number: 1
+    who: R7zlx09Yn0hn29V+nKn4CA
+    body: うちの妹が気持ち悪がってるんだが、しばいていい？
+    created_at: 1912-11-24 00:07:49.252
+    updated_at: 1912-11-24 00:07:49.252
+    <<: *gregorThreadDefaults

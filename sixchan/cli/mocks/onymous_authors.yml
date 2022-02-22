@@ -12,3 +12,6 @@ records:
   - res_id: !!python/object/apply:uuid.UUID
     - 00726573-4000-0000-a000-000000000010
     <<: *gregorDefaults
+  - res_id: !!python/object/apply:uuid.UUID
+    - 00726573-4000-0000-a000-000000000011
+    <<: *gregorDefaults
