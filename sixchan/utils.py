@@ -2,24 +2,26 @@ import hashlib
 import uuid
 from collections import deque
 from dataclasses import dataclass
+from typing import Deque
 from typing import Generic
 from typing import Hashable
-from typing import Optional
+from typing import Literal
 from typing import TypeVar
 from typing import Union
+from typing import overload
 
 import shortuuid
 
 T = TypeVar("T")
 
 
-def get_hash_from_words(*words: list[str]) -> str:
+def get_hash_from_words(*words: str) -> str:
     digest = hashlib.md5("".join(words).encode()).digest()
     return shortuuid.encode(uuid.UUID(bytes=digest))
 
 
 def paginate(page: int, pages: int, delta: int = 2, with_edge_conidtion: bool = False):
-    que = deque()
+    que: Deque[int] = deque()
     que.append(page)
     for i in range(1, delta + 1):
         right = page + i
@@ -34,7 +36,7 @@ def paginate(page: int, pages: int, delta: int = 2, with_edge_conidtion: bool = 
     if que[-1] != pages:
         que.append(pages)
 
-    pagination = []
+    pagination: list[int | Literal["dot"]] = []
     prev = 0
 
     while que:
@@ -60,8 +62,20 @@ def paginate(page: int, pages: int, delta: int = 2, with_edge_conidtion: bool = 
         return pagination
 
 
+@overload
+def group_by(objs: list[T], key: str, as_list: Literal[True]) -> list[list[T]]:
+    ...
+
+
+@overload
 def group_by(
-    objs: list[T], key: str, as_list: Optional[bool] = False
+    objs: list[T], key: str, as_list: Literal[False]
+) -> dict[Hashable, list[T]]:
+    ...
+
+
+def group_by(
+    objs: list[T], key: str, as_list: bool = False
 ) -> Union[dict[Hashable, list[T]], list[list[T]]]:
     ids = set([getattr(obj, key) for obj in objs])
     if as_list:
@@ -95,6 +109,8 @@ class Pagination:
 
     @property
     def pages(self) -> int:
+        if self.total is None:
+            raise ValueError("total is None")
         return self.total // self.per_page + 1
 
     @property

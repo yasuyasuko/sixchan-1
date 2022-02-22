@@ -6,12 +6,11 @@ from zoneinfo import ZoneInfo
 
 import humanize
 import shortuuid
-from markupsafe import Markup
 
 ASIA_TOKYO_ZONEINFO = ZoneInfo("Asia/Tokyo")
 
 
-def datetimeformat(dt: datetime) -> Markup:
+def datetimeformat(dt: datetime) -> str:
     if not dt.tzinfo:
         dt = dt.replace(tzinfo=timezone.utc)
     dt_jp = dt.astimezone(ASIA_TOKYO_ZONEINFO)

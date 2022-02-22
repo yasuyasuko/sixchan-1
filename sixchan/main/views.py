@@ -48,9 +48,11 @@ def board(board_id: str):
         board_id=board_uuid, page=page, per_page=THREADS_PER_PAGE
     )
 
-    form = (
-        OnymousThreadForm() if current_user.is_authenticated else AnonymousThreadForm()
-    )
+    if current_user.is_authenticated:
+        form = OnymousThreadForm()
+    else:
+        form = AnonymousThreadForm()
+
     if form.validate_on_submit():
         if isinstance(current_user, AnonymousUser):
             current_user.name = form.anon_name.data
@@ -84,8 +86,12 @@ def thread(thread_id: str):
     reses = queries.get_reses(thread.id)
     can_post = len(reses) < MAX_RESES_PER_THREAD
 
-    res_form = OnymousResForm() if current_user.is_authenticated else AnonymousResForm()
+    if current_user.is_authenticated:
+        res_form = OnymousResForm()
+    else:
+        res_form = AnonymousResForm()
     favorite_form = FavoriteForm(prefix="favorite")
+
     if res_form.validate_on_submit():
         if isinstance(current_user, AnonymousUser):
             current_user.name = res_form.anon_name.data

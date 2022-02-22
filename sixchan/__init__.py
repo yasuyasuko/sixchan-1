@@ -3,8 +3,9 @@ from typing import Optional
 from flask import Flask
 from flask import render_template
 
-from sixchan.config import FLASH_LEVEL, get_config
+from sixchan.config import FLASH_LEVEL
 from sixchan.config import FLASH_MESSAGE
+from sixchan.config import get_config
 from sixchan.extensions import csrf
 from sixchan.extensions import db
 from sixchan.extensions import login_manager

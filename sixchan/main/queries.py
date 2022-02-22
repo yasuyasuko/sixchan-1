@@ -64,13 +64,15 @@ class ResQueryModel:
     @classmethod
     def from_row(cls, row: ResRow) -> "ResQueryModel":
         is_anonymous = not bool(row.username)
+        name = row.anon_name if is_anonymous else row.display_name
+        name = name or "null"
         return cls(
             number=row.number,
             who=row.who,
             body=row.body,
             posted_at=row.created_at,
             is_anonymous=is_anonymous,
-            name=row.anon_name or "null" if is_anonymous else row.display_name,
+            name=name,
             username=None if is_anonymous else row.username,
             email=row.anon_email if is_anonymous else None,
         )

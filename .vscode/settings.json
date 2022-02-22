@@ -5,7 +5,9 @@
         "88"
     ],
     "python.formatting.provider": "black",
+    "python.linting.mypyEnabled": true,
     "files.exclude": {
-        "**/__pycache__": true
+        "**/__pycache__": true,
+        "**/.mypy_cache": true
     }
 }

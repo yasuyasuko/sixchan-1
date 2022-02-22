@@ -21,7 +21,7 @@ class UserResRow(NamedTuple):
     board_name: str
     thread_id: uuid.UUID
     thread_name: str
-    res_number: uuid.UUID
+    res_number: int
     res_who: str
     res_body: str
     res_created_at: datetime

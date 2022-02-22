@@ -1,4 +1,6 @@
 import os
+from abc import ABC
+from typing import Optional
 
 ANON_NAME_MAX_LENGTH = 50
 BOARD_CATEGORY_NAME_MAX_LENGTH = 30
@@ -64,19 +66,27 @@ class FLASH_MESSAGE:
     USERNAME_ALREADY_EXISTS = "そのユーザー名は既に使われています"
 
 
-class Config:
+class Config(ABC):
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DATABASE_DIALECT: str
+    DATABASE_USERNAME: Optional[str]
+    DATABASE_PASSWORD: Optional[str]
+    DATABASE_HOST: Optional[str]
+    DATABASE_PORT: Optional[int]
+    DATABASE_NAME: str
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
-        uri = (
-            f"{self.DATABASE_DRIVER}://"
-            f"{self.DATABASE_USERNAME}:{self.DATABASE_PASSWORD}"
-            f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}"
-            f"/{self.DATABASE_NAME}"
-        )
-        print(uri)
+        if self.DATABASE_DIALECT == "sqlite":
+            uri = f"sqlite:///{self.DATABASE_NAME}"
+        else:
+            uri = (
+                f"{self.DATABASE_DIALECT}://"
+                f"{self.DATABASE_USERNAME}:{self.DATABASE_PASSWORD}"
+                f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}"
+                f"/{self.DATABASE_NAME}"
+            )
         return uri
 
 
@@ -86,12 +96,12 @@ class ProductionConfig(Config):
     MAIL_PORT = os.environ.get("MAIL_PORT")
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    DATABASE_DRIVER = os.environ.get("DATABASE_DIALECT")
-    DATABASE_USERNAME = os.environ.get("DATABASE_DRIVER")
+    DATABASE_DIALECT = os.environ.get("DATABASE_DIALECT", "postgresql")
+    DATABASE_USERNAME = os.environ.get("DATABASE_USERNAME")
     DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
     DATABASE_HOST = os.environ.get("DATABASE_HOST")
-    DATABASE_PORT = os.environ.get("DATABASE_PORT")
-    DATABASE_NAME = os.environ.get("DATABASE_NAME")
+    DATABASE_PORT = int(os.environ.get("DATABASE_PORT", "5432"))
+    DATABASE_NAME = os.environ.get("DATABASE_NAME", "sixchan")
 
 
 class DevelopmentConfig(Config):
@@ -100,7 +110,7 @@ class DevelopmentConfig(Config):
     MAIL_PORT = 11025
     MAIL_USERNAME = "sixchan@example.com"
     MAIL_PASSWORD = "password"
-    DATABASE_DRIVER = "postgresql"
+    DATABASE_DIALECT = "postgresql"
     DATABASE_USERNAME = "sixchan"
     DATABASE_PASSWORD = "password"
     DATABASE_HOST = "localhost"
@@ -116,7 +126,8 @@ class TestingConfig(Config):
     MAIL_PORT = 11025
     MAIL_USERNAME = "sixchan@example.com"
     MAIL_PASSWORD = "password"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    DATABASE_DIALECT = "sqlite"
+    DATABASE_NAME = ":memory:"
 
 
 def get_config(env: str) -> Config:
@@ -126,4 +137,4 @@ def get_config(env: str) -> Config:
         "development": DevelopmentConfig(),
         "testing": TestingConfig(),
     }
-    return configs.get(env)
+    return configs.get(env, DevelopmentConfig())

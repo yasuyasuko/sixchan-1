@@ -30,6 +30,9 @@ format:
 isort:
 	isort --force-single-line-imports .
 
+mypy:
+	mypy sixchan
+
 .PHONY: dev up down postgres
 .PHONY: createtables droptables insertmocks resetdb
-.PHONY: lint format isort
+.PHONY: lint format isort mypy
