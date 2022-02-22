@@ -7,7 +7,6 @@ from typing import Generic
 from typing import Hashable
 from typing import Literal
 from typing import TypeVar
-from typing import Union
 from typing import overload
 
 import shortuuid
@@ -74,9 +73,7 @@ def group_by(
     ...
 
 
-def group_by(
-    objs: list[T], key: str, as_list: bool = False
-) -> Union[dict[Hashable, list[T]], list[list[T]]]:
+def group_by(objs: list[T], key: str, as_list: bool = False):
     ids = set([getattr(obj, key) for obj in objs])
     if as_list:
         return [[obj for obj in objs if getattr(obj, key) == id_] for id_ in ids]
