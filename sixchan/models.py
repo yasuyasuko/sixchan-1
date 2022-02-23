@@ -260,6 +260,9 @@ class Res(UUIDMixin, TimestampMixin, db.Model):
     inappropriate = db.Column(db.Boolean, default=False, nullable=False)
     thread_id = db.Column(UUID(), db.ForeignKey("threads.id"), nullable=False)
 
+    def panish(self) -> None:
+        self.inappropriate = True
+
 
 class Thread(UUIDMixin, TimestampMixin, db.Model):
     __tablename__ = "threads"
@@ -349,6 +352,12 @@ class Report(UUIDMixin, TimestampMixin, db.Model):
     status = db.Column(db.Enum(ReportStatus), default=ReportStatus.OPEN, nullable=False)
     res_id = db.Column(UUID(), db.ForeignKey("reses.id"), nullable=True)
     reported_by = db.Column(UUID(), db.ForeignKey("user_accounts.id"), nullable=True)
+
+    def open(self) -> None:
+        self.status = ReportStatus.OPEN
+
+    def close(self) -> None:
+        self.status = ReportStatus.CLOSE
 
 
 class BoardCategory(UUIDMixin, TimestampMixin, db.Model):

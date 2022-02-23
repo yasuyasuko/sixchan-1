@@ -86,6 +86,20 @@
   </div>
 {% endmacro %}
 
+<!-- RadioField -->
+<!-- field: wtforms RadioField. -->
+{% macro RadioField(field) %}
+  <div class="mt-1">
+    {% for subfield in field %}
+      <tr>
+        <td>{{ subfield }}</td>
+        <td>{{ subfield.label }}</td>
+      </tr>
+    {% endfor %}
+    {{ ErrorMessages(field) }}
+  </div>
+{% endmacro %}
+
 <!-- SubmitButton -->
 <!-- label: button text. -->
 <!-- form: target form id. -->
