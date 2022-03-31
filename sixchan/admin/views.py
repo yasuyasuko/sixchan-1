@@ -3,7 +3,6 @@ from uuid import UUID
 
 from flask import Blueprint
 from flask import abort
-from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -12,12 +11,9 @@ from flask_login import current_user
 
 from sixchan.admin import queries
 from sixchan.admin.forms import PanishForm
-from sixchan.config import FLASH_LEVEL as LEVEL
-from sixchan.config import FLASH_MESSAGE as MSG
 from sixchan.config import REPORT_PER_PAGE
 from sixchan.extensions import db
 from sixchan.models import Report
-from sixchan.models import ReportStatus
 from sixchan.models import Res
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
