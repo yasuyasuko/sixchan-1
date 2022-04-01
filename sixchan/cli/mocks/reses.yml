@@ -3,13 +3,13 @@ depends:
   - Thread
 testThreadDefaults: &testThreadDefaults
   thread_id: !!python/object/apply:uuid.UUID
-    - 00746872-4000-0000-a000-000000000001
+    - 00746872-0000-4000-a000-000000000001
 gregorThreadDefaults: &gregorThreadDefaults
   thread_id: !!python/object/apply:uuid.UUID
-    - 00746872-4000-0000-a000-000000000002
+    - 00746872-0000-4000-a000-000000000002
 records:
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000001
+      - 00726573-0000-4000-a000-000000000001
     number: 1
     who: xMpCOKC5I4INzFCab3WEmw
     body: ぬるぽ
@@ -18,7 +18,7 @@ records:
     updated_at: 2022-01-01 00:00:01.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000002
+      - 00726573-0000-4000-a000-000000000002
     number: 2
     who: yB5yjZ1ML2NvBn+JzBSGLA
     body: ぬるぽぽ
@@ -27,7 +27,7 @@ records:
     updated_at: 2022-01-01 00:00:02.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000003
+      - 00726573-0000-4000-a000-000000000003
     number: 3
     who: 7MvIfktc4v4oMI/Z8qe68w
     body: ぬるぽぽぽ
@@ -36,7 +36,7 @@ records:
     updated_at: 2022-01-01 00:00:03.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000004
+      - 00726573-0000-4000-a000-000000000004
     number: 4
     who: qH/2eaLz5x2RgaZ7dUISLA
     body: ぬるぽぽぽぽ
@@ -45,7 +45,7 @@ records:
     updated_at: 2022-01-01 00:00:04.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000005
+      - 00726573-0000-4000-a000-000000000005
     number: 5
     who: R7zlx09Yn0hn29V+nKn4CA
     body: 登録ユーザぬるぽ
@@ -54,7 +54,7 @@ records:
     updated_at: 2022-01-01 00:00:05.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000006
+      - 00726573-0000-4000-a000-000000000006
     number: 6
     who: 9G+QaZLZbgp/1GObbyu5jA
     body: ">>1\nぬるぽ?"
@@ -63,7 +63,7 @@ records:
     updated_at: 2022-01-01 00:00:06.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000007
+      - 00726573-0000-4000-a000-000000000007
     number: 7
     who: NXVwSdX/Y8DBaSetx2W9tg
     body: ">>2\nぬるぽぽ"
@@ -72,7 +72,7 @@ records:
     updated_at: 2022-01-01 00:00:07.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000008
+      - 00726573-0000-4000-a000-000000000008
     number: 8
     who: xMpCOKC5I4INzFCab3WEmw
     body: ">>6\nうん"
@@ -81,7 +81,7 @@ records:
     updated_at: 2022-01-01 00:00:08.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000009
+      - 00726573-0000-4000-a000-000000000009
     number: 9
     who: KBxREmffFm9h4+/UM7Wp8g
     body: ">>1 >>2\nぬるぽおおお"
@@ -90,7 +90,7 @@ records:
     updated_at: 2022-01-01 00:00:09.000
     <<: *testThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000010
+      - 00726573-0000-4000-a000-000000000010
     number: 1
     who: R7zlx09Yn0hn29V+nKn4CA
     body: わかるやついる？
@@ -99,7 +99,7 @@ records:
     updated_at: 1912-11-24 00:07:32.821
     <<: *gregorThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000011
+      - 00726573-0000-4000-a000-000000000011
     number: 2
     who: KBxREmffFm9h4+/UM7Wp8g
     body: とっても不適切な内容
@@ -108,7 +108,7 @@ records:
     updated_at: 1912-11-24 00:07:49.252
     <<: *gregorThreadDefaults
   - id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000012
+      - 00726573-0000-4000-a000-000000000012
     number: 3
     who: R7zlx09Yn0hn29V+nKn4CA
     body: うちの妹が気持ち悪がってるんだが、しばいていい？

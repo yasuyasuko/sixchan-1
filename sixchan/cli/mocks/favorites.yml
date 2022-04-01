@@ -4,7 +4,7 @@ depends:
   - UserAccount
 records:
   - account_id: !!python/object/apply:uuid.UUID
-    - 75736572-4000-0000-a000-000000000001
+      - 75736572-0000-4000-a000-000000000001
     thread_id: !!python/object/apply:uuid.UUID
-    - 00746872-4000-0000-a000-000000000002
+      - 00746872-0000-4000-a000-000000000002
     created_at: 1912-11-24 00:08:00.000

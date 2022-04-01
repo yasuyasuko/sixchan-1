@@ -4,10 +4,10 @@ defaults: &defaults
   updated_at: 2022-01-01 00:00:00.000
 records:
   - id: !!python/object/apply:uuid.UUID
-    - 63617465-4000-0000-a000-000000000001
+      - 63617465-0000-4000-a000-000000000001
     name: プログラミング言語
     <<: *defaults
   - id: !!python/object/apply:uuid.UUID
-    - 63617465-4000-0000-a000-000000000002
+      - 63617465-0000-4000-a000-000000000002
     name: 6channel運営
     <<: *defaults

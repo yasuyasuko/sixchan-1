@@ -7,19 +7,19 @@ defaults: &defaults
   activated: true
 records:
   - id: !!python/object/apply:uuid.UUID
-    - 75736572-4000-0000-a000-000000000001
+      - 75736572-0000-4000-a000-000000000001
     username: gregor_samsa
     email: gregor_samsa@example.com
     role: general
     <<: *defaults
   - id: !!python/object/apply:uuid.UUID
-    - 75736572-4000-0000-a000-000000000002
+      - 75736572-0000-4000-a000-000000000002
     username: grete_samsa
     email: grete_samsa@example.com
     role: moderator
     <<: *defaults
   - id: !!python/object/apply:uuid.UUID
-    - 75736572-4000-0000-a000-000000000003
+      - 75736572-0000-4000-a000-000000000003
     username: franz_kafka
     email: franz_kafka@example.com
     role: administrator

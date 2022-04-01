@@ -4,14 +4,14 @@ depends:
   - UserProfile
 gregorDefaults: &gregorDefaults
   - author_id: !!python/object/apply:uuid.UUID
-    - 75736572-4000-0000-a000-000000000001
+      - 75736572-0000-4000-a000-000000000001
 records:
   - res_id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000005
+      - 00726573-0000-4000-a000-000000000005
     <<: *gregorDefaults
   - res_id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000010
+      - 00726573-0000-4000-a000-000000000010
     <<: *gregorDefaults
   - res_id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000012
+      - 00726573-0000-4000-a000-000000000012
     <<: *gregorDefaults

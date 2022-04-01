@@ -3,14 +3,14 @@ depends:
   - Res
 records:
   - res_id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000002
+      - 00726573-0000-4000-a000-000000000002
     name: 6ちゃんねら
     email: null
   - res_id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000003
+      - 00726573-0000-4000-a000-000000000003
     name: null
     email: null@example.com
   - res_id: !!python/object/apply:uuid.UUID
-    - 00726573-4000-0000-a000-000000000004
+      - 00726573-0000-4000-a000-000000000004
     name: suwa
     email: suwa@example.com
