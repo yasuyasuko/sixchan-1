@@ -301,6 +301,7 @@ class Thread(UUIDMixin, TimestampMixin, db.Model):
             body=body,
         )
         self.reses.append(new_res)
+        db.session.flush()
 
         if isinstance(user, UserAccount):
             db.session.add(OnymousAuthor(res_id=new_res_id, author_id=user.id))
