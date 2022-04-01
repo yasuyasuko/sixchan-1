@@ -134,7 +134,7 @@ def report(res_id: UUID):
             reason_name=form.reason.data,
             detail=form.detail.data,
             res_id=res.id,
-            reported_by=reporter,
+            reported_by=reporter.id,
         )
         db.session.add(report)
         db.session.commit()
