@@ -1,0 +1,32 @@
+{
+    "reses": [
+        {
+            "author": null,
+            "email": null,
+            "who": "xMpCOKC5I4INzFCab3WEmw",
+            "body": "ぬるぽ",
+            "created_at": "2022-01-01 00:00:01.000"
+        },
+        {
+            "author": "6ちゃんねら",
+            "email": null,
+            "who": "yB5yjZ1ML2NvBn+JzBSGLA",
+            "body": "ぬるぽぽ",
+            "created_at": "2022-01-01 00:00:02.000"
+        },
+        {
+            "author": null,
+            "email": "null@example.com",
+            "who": "7MvIfktc4v4oMI/Z8qe68w",
+            "body": "ぬるぽぽぽ",
+            "created_at": "2022-01-01 00:00:03.000"
+        },
+        {
+            "author": "suwa",
+            "email": "suwa@example.com",
+            "who": "qH/2eaLz5x2RgaZ7dUISLA",
+            "body": "ぬるぽぽぽぽ",
+            "created_at": "2022-01-01 00:00:04.000"
+        }
+    ]
+}

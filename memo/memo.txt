@@ -1,0 +1,40 @@
+これらのプログラムは(.venv)でmake dev実行時に出てくるリンクから始められます
+
+
+github,vscodeともに初めてなので備忘録的なものを
+・環境構築は以下で可能
+$ git config --global user.name XXXXXX
+$ git config --global user.email XXXXX@XXXXXX
+call .venv¥Scripts¥activate
+
+・リンク
+https://github.com/yasuyasuko/sixchan
+https://panda-clip.com/flask-install/#index_id4
+https://codezine.jp/article/detail/16559
+https://www.youtube.com/watch?v=DkOZSxaMV8w
+
+
+・githubへの保存方法
+    ターミナル(cmd)
+        git add -A
+        git commit
+        git push
+
+
+・やり残していること
+    アイコン二つが適当（一応フリー素材入れてる）
+    プログラムがYouTubeにあったものそのまま（オリジナリティを）
+
+ipythonでのA()の使い方（sixchan内）
+from sixchan import app, A
+with app.app_context():
+    A()
+
+
+・Dockerを用いずに開発を進める
+    このことによるデメリットはわからないが、参考動画のPart2以降はそれで運用しているため、念頭に
+
+・次やること08/25
+次回本山先生にデータベースの説明をする
+その後作成したmake_db.pyを用いてデータベースを作成
+HTMLファイルをつくる。

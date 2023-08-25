@@ -1,0 +1,27 @@
+Post Table（橋渡し役）
+    UserID  
+    ThreadID    
+    PostID  
+User Table（ユーザ毎に異なる情報）
+    UserID
+    User_Name    
+    Email   
+    PW
+Comment Table（コメント毎に異なる情報）
+    PostID  
+    Comment_Content
+    Comment_Create_Date
+Thread Table（スレ毎に異なる情報）
+    ThreadID    
+    Thread_Name
+    Thread_Content  
+    Thread_Create_Date
+
+
+ユーザ画面で取得する情報
+    UserID
+    User_Name    
+    Email   
+    PW
+    Thread_Name(UserIDで絞り込んだThreadIDから)
+    Comment_Create_Date(UserIDで絞り込んだPostIDから)
